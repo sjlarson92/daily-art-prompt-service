@@ -2,7 +2,6 @@ package com.dap.DailyArtPrompt.service;
 
 import com.dap.DailyArtPrompt.entity.Prompt;
 import com.dap.DailyArtPrompt.repository.PromptRepository;
-import jdk.vm.ci.meta.Local;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
