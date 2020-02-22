@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class PromptService {
@@ -29,5 +30,10 @@ public class PromptService {
         }
 
         return allPromptsMap;
+    }
+
+    public String testFunc() {
+        Prompt prompt = promptRepository.getOne((long) 1);
+        return prompt.getText();
     }
 }
