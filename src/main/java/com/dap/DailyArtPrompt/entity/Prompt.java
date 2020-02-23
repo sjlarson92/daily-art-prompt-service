@@ -16,6 +16,13 @@ public class Prompt {
     @Column(name = "text")
     private String text;
 
+    public Prompt() {}
+
+    public Prompt(String date, String text) {
+        this.date = date;
+        this.text = text;
+    }
+
     public long getId() {
         return id;
     }

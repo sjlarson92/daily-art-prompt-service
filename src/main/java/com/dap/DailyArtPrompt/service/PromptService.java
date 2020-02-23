@@ -8,11 +8,12 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class PromptService {
 
-    final PromptRepository promptRepository;
+    private final PromptRepository promptRepository;
 
     public PromptService(PromptRepository promptRepository) {
         this.promptRepository = promptRepository;
