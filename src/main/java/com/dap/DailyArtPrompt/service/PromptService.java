@@ -31,9 +31,4 @@ public class PromptService {
 
         return allPromptsMap;
     }
-
-    public String testFunc() {
-        Prompt prompt = promptRepository.getOne((long) 1);
-        return prompt.getText();
-    }
 }

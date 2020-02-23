@@ -15,10 +15,10 @@ class ImageServiceTest {
         @Nested
         @DisplayName("fdjkadjfklsdjfksjfk -  fsdafasdk")
         class whenCalled {
-            @Test
-            public void shouldReturnString() {
-                assertThat(imageService.testFunc()).isEqualTo("Hello");
-            }
+//            @Test
+//            public void shouldReturnString() {
+//                assertThat(imageService.testFunc()).isEqualTo("Hello");
+//            }
         }
 
     }
