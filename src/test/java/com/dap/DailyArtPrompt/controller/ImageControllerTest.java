@@ -55,7 +55,7 @@ class ImageControllerTest {
         @DisplayName("When ImageService returns null")
         class whenImageServiceReturnsNull {
             @Test
-            public void returnsNullImage() throws Exception {
+            public void returnsEmptyString() throws Exception {
                 when(imageService.getImage()).thenReturn(null);
                 MvcResult result = mockMvc.perform(get("/image")).andReturn();
 
