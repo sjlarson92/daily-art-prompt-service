@@ -3,6 +3,7 @@ package com.dap.DailyArtPrompt.controller;
 import com.dap.DailyArtPrompt.service.ImageService;
 import com.dap.DailyArtPrompt.model.Image;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +13,13 @@ import org.springframework.http.HttpHeaders;
 @RestController
 @RequestMapping("/image")
 public class ImageController {
-    ImageService imageService = new ImageService();
+
+    private final ImageService imageService;
+
+    public ImageController(ImageService imageService) {
+        this.imageService = imageService;
+    }
+
     @GetMapping("")
     public ResponseEntity<Image> getImage() {
         HttpHeaders headers = new HttpHeaders();

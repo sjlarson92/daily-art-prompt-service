@@ -13,7 +13,7 @@ import java.util.Optional;
 @Component
 public class PromptService {
 
-    final PromptRepository promptRepository;
+    private final PromptRepository promptRepository;
 
     public PromptService(PromptRepository promptRepository) {
         this.promptRepository = promptRepository;
