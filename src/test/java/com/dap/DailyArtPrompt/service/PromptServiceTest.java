@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,7 +60,7 @@ class PromptServiceTest {
                 when(promptRepository.findAll()).thenReturn(null);
                 try {
                     assertThat(promptService.getAllPrompts()).isInstanceOf(NullPointerException.class);
-                } catch (Exception e) {}
+                } catch (Exception ignored) {}
 
             }
         }
