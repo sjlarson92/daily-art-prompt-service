@@ -15,12 +15,10 @@ public class ImageService {
     }
 
     public Image getImage() {
-        final String uri = "https://dog.ceo/api/breeds/image/random";
-
-        ImageResponse image = restTemplate.getForObject(uri, ImageResponse.class);
-
-        if(image != null) {
-            return new Image(image.getMessage());
+        String uri = "https://dog.ceo/api/breeds/image/random";
+        ImageResponse imageResponse = restTemplate.getForObject(uri, ImageResponse.class);
+        if(imageResponse != null) {
+            return new Image(imageResponse.getMessage());
         }
         else {
            return null;
