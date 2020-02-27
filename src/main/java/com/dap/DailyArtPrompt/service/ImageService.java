@@ -7,7 +7,6 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class ImageService {
-
     private final RestTemplate restTemplate;
 
     public ImageService(RestTemplate restTemplate) {
@@ -17,11 +16,10 @@ public class ImageService {
     public Image getImage() {
         String uri = "https://dog.ceo/api/breeds/image/random";
         ImageResponse imageResponse = restTemplate.getForObject(uri, ImageResponse.class);
-        if(imageResponse != null) {
+        if (imageResponse != null) {
             return new Image(imageResponse.getMessage());
-        }
-        else {
-           return null;
+        } else {
+            return null;
         }
     }
 }

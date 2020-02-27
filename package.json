@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "prettier": "./node_modules/.bin/prettier --write '**/*.java'"
+
+  },
+  "devDependencies": {
+    "prettier": "^1.19.1",
+    "prettier-plugin-java": "^0.7.0"
+  }
+}

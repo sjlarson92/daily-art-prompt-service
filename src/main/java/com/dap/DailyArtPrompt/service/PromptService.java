@@ -2,17 +2,15 @@ package com.dap.DailyArtPrompt.service;
 
 import com.dap.DailyArtPrompt.entity.Prompt;
 import com.dap.DailyArtPrompt.repository.PromptRepository;
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.stereotype.Component;
 
 @Component
 public class PromptService {
-
     private final PromptRepository promptRepository;
 
     public PromptService(PromptRepository promptRepository) {

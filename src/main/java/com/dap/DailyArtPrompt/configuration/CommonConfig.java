@@ -10,5 +10,5 @@ public class CommonConfig {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
-    };
+    }
 }

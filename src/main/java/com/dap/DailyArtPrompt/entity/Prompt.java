@@ -3,11 +3,10 @@ package com.dap.DailyArtPrompt.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name="prompt")
+@Table(name = "prompt")
 public class Prompt {
-
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Column(name = "date")

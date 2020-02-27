@@ -1,5 +1,9 @@
 package com.dap.DailyArtPrompt.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import com.dap.DailyArtPrompt.model.Image;
 import com.dap.DailyArtPrompt.service.ImageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,14 +18,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
 @WebMvcTest(ImageController.class)
 @ExtendWith(MockitoExtension.class)
 class ImageControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -38,6 +37,7 @@ class ImageControllerTest {
         @Nested
         @DisplayName("When ImageService returns an Image")
         class whenImageServiceReturnsAnImage {
+
             @Test
             public void returnsTheImage() throws Exception {
                 Image image = new Image("image source");
@@ -45,15 +45,17 @@ class ImageControllerTest {
                 MvcResult result = mockMvc.perform(get("/image")).andReturn();
 
                 String responseBodyString = result.getResponse().getContentAsString();
-                System.out.println("response: " +  responseBodyString);
+                System.out.println("response: " + responseBodyString);
                 Image responseBody = objectMapper.readValue(responseBodyString, Image.class);
 
                 assertThat(responseBody).isEqualToComparingFieldByField(image);
             }
         }
+
         @Nested
         @DisplayName("When ImageService returns null")
         class whenImageServiceReturnsNull {
+
             @Test
             public void returnsEmptyString() throws Exception {
                 when(imageService.getImage()).thenReturn(null);
@@ -64,5 +66,4 @@ class ImageControllerTest {
             }
         }
     }
-
 }

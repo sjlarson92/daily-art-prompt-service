@@ -1,5 +1,8 @@
 package com.dap.DailyArtPrompt.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 import com.dap.DailyArtPrompt.model.Image;
 import com.dap.DailyArtPrompt.model.ImageResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -11,12 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class ImageServiceTest {
-
     @Mock
     RestTemplate restTemplate;
 
@@ -25,6 +24,7 @@ class ImageServiceTest {
 
     @Nested
     class getImage {
+
         @Nested
         @DisplayName("when image is null")
         class whenImageIsNull {
@@ -51,6 +51,5 @@ class ImageServiceTest {
                 assertThat(result).isEqualToComparingFieldByField(image);
             }
         }
-
     }
 }

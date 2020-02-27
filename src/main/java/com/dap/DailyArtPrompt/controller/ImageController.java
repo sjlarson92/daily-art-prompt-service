@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/image")
 public class ImageController {
-
     private final ImageService imageService;
 
     public ImageController(ImageService imageService) {

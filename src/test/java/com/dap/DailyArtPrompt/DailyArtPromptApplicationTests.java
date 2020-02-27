@@ -8,8 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @AutoConfigureTestDatabase // this replaces the database with the embedded/light/testable version
 class DailyArtPromptApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    void contextLoads() {}
 }
