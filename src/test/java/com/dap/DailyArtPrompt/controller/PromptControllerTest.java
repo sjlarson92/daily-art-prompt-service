@@ -33,7 +33,7 @@ class PromptControllerTest {
     PromptService promptService;
 
     @Nested
-    @DisplayName("/prompt/all")
+    @DisplayName("/prompts")
     class getAllPrompts {
 
         @Nested
@@ -48,7 +48,7 @@ class PromptControllerTest {
                 when(promptService.getAllPrompts()).thenReturn(promptsMap);
 
                 mockMvc
-                    .perform(get("/prompt/all"))
+                    .perform(get("/prompts"))
                     .andExpect(content().string(objectMapper.writeValueAsString(promptsMap)));
             }
         }

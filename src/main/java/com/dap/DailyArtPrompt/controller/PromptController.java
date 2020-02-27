@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/prompt")
+@RequestMapping("/prompts")
 public class PromptController {
     final PromptService promptService;
 
@@ -19,7 +19,7 @@ public class PromptController {
         this.promptService = promptService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("")
     public ResponseEntity<Map<LocalDate, Prompt>> getAllPrompts() {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
