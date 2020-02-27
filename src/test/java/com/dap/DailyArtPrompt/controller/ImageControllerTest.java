@@ -31,7 +31,7 @@ class ImageControllerTest {
     ImageService imageService;
 
     @Nested
-    @DisplayName("/image")
+    @DisplayName("/images")
     class getImage {
 
         @Nested
@@ -42,7 +42,7 @@ class ImageControllerTest {
             public void returnsTheImage() throws Exception {
                 Image image = new Image("image source");
                 when(imageService.getImage()).thenReturn(image);
-                MvcResult result = mockMvc.perform(get("/image")).andReturn();
+                MvcResult result = mockMvc.perform(get("/images/1")).andReturn();
 
                 String responseBodyString = result.getResponse().getContentAsString();
                 System.out.println("response: " + responseBodyString);
@@ -59,7 +59,7 @@ class ImageControllerTest {
             @Test
             public void returnsEmptyString() throws Exception {
                 when(imageService.getImage()).thenReturn(null);
-                MvcResult result = mockMvc.perform(get("/image")).andReturn();
+                MvcResult result = mockMvc.perform(get("/images/1")).andReturn();
 
                 String responseBodyString = result.getResponse().getContentAsString();
                 assertThat(responseBodyString).isEqualTo("");
