@@ -20,9 +20,7 @@ public class PromptController {
     }
 
     @GetMapping("")
-    public ResponseEntity<Map<LocalDate, Prompt>> getAllPrompts() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+    public Map<LocalDate, Prompt> getAllPrompts() {
         Map<LocalDate, Prompt> promptsMap = promptService.getAllPrompts();
 
         System.out.println("Api /all returns map with following prompts: ");
@@ -37,6 +35,6 @@ public class PromptController {
             );
         }
 
-        return ResponseEntity.ok().headers(headers).body(promptsMap);
+        return promptsMap;
     }
 }
