@@ -19,11 +19,8 @@ public class ImageController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Image> getImage(@PathVariable String id) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-        Image image = imageService.getImage();
-        return ResponseEntity.ok().headers(headers).body(image);
+    public Image getImage(@PathVariable String id) {
+        return imageService.getImage();
     }
 }
 
