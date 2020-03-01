@@ -23,7 +23,7 @@ public class PromptController {
     public Map<LocalDate, Prompt> getAllPrompts() {
         Map<LocalDate, Prompt> promptsMap = promptService.getAllPrompts();
 
-        System.out.println("Api /all returns map with following prompts: ");
+        System.out.println("Api /prompts returns map with following prompts: ");
         for (Prompt prompt : promptsMap.values()) {
             System.out.println(
                 "id: " +
