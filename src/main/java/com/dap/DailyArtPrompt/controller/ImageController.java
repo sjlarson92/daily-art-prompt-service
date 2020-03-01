@@ -20,10 +20,8 @@ public class ImageController {
 
     @GetMapping("/{id}")
     public Image getImage(@PathVariable String id) {
-        Image image = imageService.getImage();
-        System.out.println("Api /images/{id} returns Image with following src: "
-                + image.getSrc());
-        return image;
+        System.out.println("Api /images/{id} getting Image by id: " + id);
+        return imageService.getImage();
     }
 }
 
