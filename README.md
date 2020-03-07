@@ -1,25 +1,5 @@
 # Daily Art Prompt Service (Spring Boot)
 
-# Java
-
-- check version `java -version`
-
-```java
-public class HelloWorld {
-  public static void main(String[] args) {
-    System.out.println("Hello World!");
-  }
-}
-```
-   
-- To run java code you first need to compile it. To compile code in the terminal use command: `javac fileName.java`
-- If the file is successfully compiled it will create a fileName.class file that can be run
-- To run this file use the command: `java fileName`
-- When comments are short we use the single-line syntax: `//`
-- When comments are long we use the multi-line syntax: `/* */`
-
-## Spring Boot
-
 - Spring is a Java Framework that makes creating Java applications faster and easier:
 
   - Sets up the boilerplate for an application that gets it up and running quickly
@@ -28,27 +8,11 @@ public class HelloWorld {
 
 - use Spring Initializr to Bootstrap your application at https://start.spring.io/
 
-### Gradle
-
-- To run a build initially use command `gradle build` to add dependencies
-- Use command `gradle bootRun` to execute file
-- Add the dependency of `implementation 'org.springframework.boot:spring-boot-starter-web'` to have web development dependency this will make your application run on localhost: 8080 when application is executed
-
-- when opening gradle project in IntelliJ two finger click the build.gradle file and click `import gradle project` to import as a gradle project
-
-- Run gradle application using profiles
-
-```shell script
-
-gradle bootRun --args="--spring.profiles.active=local" # local is the profile name in this example which is application-local.yml
-
-```
-
 ## Restful Web Service
 
 - REST stands for Representational State Transfer. It's an architectural pattern for creating web services. A RESTful service is one that implements that pattern and follows the naming conventions of big to small
 
-- Example: dog/{id}/owner/{id}  (with this we can see that owner is a part of dog)
+- Example: owner/{id}/dog/{id}  (with this we can see that owner has dogs and can also have multiple)
 
 ```java
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController // Use RestController and RequestMapping to add listeners to the route
-@RequestMapping("/dog")
+@RequestMapping("/dogs")
 public class DogController {
     DogService dogService = new DogService(); // dogService must be instantiated so that we can use its methods
 
