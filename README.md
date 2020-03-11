@@ -42,6 +42,37 @@ public class DogController {
 }
 ```
 
+```java
+// UserController
+// When we name a header specifically, the header is required by default
+// Requesting headers: 
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    @PostMapping("")
+    public void createUser(
+            @RequestHeader("email") String email, // this will pull headers individually by key
+            @RequestHeader("password") String password) {
+        System.out.println("email is: " + email);
+        System.out.println("password is: " + password);
+    }
+}
+
+// you can all request multiple headers all together in a map
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    @PostMapping("")
+    public void createUser(
+            @RequestHeader Map<String, String> headers) {
+        System.out.println("email is: " + email);
+        System.out.println("password is: " + password);
+    }
+}
+
+```
+
 ## DB Connection with Spring
 
 - You should have a application.properties file delete this and create a application.yml file instead and and the below code to it
@@ -97,6 +128,55 @@ public class PromptService {
 - ORM (object relational mapping framework)
 - ORM is basicaly making your models match db tables so that data aligns
 - used to overcome shortcomings of JDBC (java database connection)
+
+
+```java
+// User
+@Entity
+@Table(name = "`user`") //'user' is  a reserved word in postgres and so it needs to be written with ``
+@Data
+@RequiredArgsConstructor
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "password")
+    private String password;
+}
+
+```
+
+## Lombok
+
+- add depenedcy in build.gradle `id "io.freefair.lombok" version "5.0.0-rc2"`
+
+```java
+// User
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+import javax.persistence.*;
+
+ @Entity
+ @Table(name = "`user`")
+ @Data // annotation creates getters and setters
+ @RequiredArgsConstructor // creates an All Args Constructor
+ public class User {
+     @Id
+     @GeneratedValue(strategy = GenerationType.AUTO)
+     private long id;
+ 
+     @Column(name = "email")
+     private String email;
+ 
+     @Column(name = "password")
+     private String password;
+ }
+```
 
 # Testing
 
