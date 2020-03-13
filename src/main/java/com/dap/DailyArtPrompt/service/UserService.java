@@ -1,13 +1,23 @@
 package com.dap.DailyArtPrompt.service;
 
+import com.dap.DailyArtPrompt.entity.User;
+import com.dap.DailyArtPrompt.model.UserResponse;
+import com.dap.DailyArtPrompt.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UserService {
-    public void createUser(String email, String password) {
-        System.out.println("email is: " + email);
-        System.out.println("password is: " + password);
+    private final UserRepository userRepository;
 
-        // check db if email exists there
+    public UserResponse createUser(String email, String password) {
+        User newUser = new User(email, password);
+        User savedUser = userRepository.save(newUser);
+        return UserResponse.builder()
+                .id(savedUser.getId())
+                .email(savedUser.getEmail())
+                .build();
+//        return new UserResponse(savedUser.getId(), savedUser.getEmail());
     }
 }
