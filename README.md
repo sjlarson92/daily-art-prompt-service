@@ -70,7 +70,89 @@ public class UserController {
         System.out.println("password is: " + password);
     }
 }
+```
 
+```java
+
+// UserController
+// Handling Exceptions by returning  a ResponseEntity
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @PostMapping("")
+    public ResponseEntity<UserResponse> createUser(
+        @RequestHeader("email") String email,
+        @RequestHeader("password") String password
+    ) {
+        try {
+            UserResponse userResponse = userService.createUser(email, password);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED) // 201
+                    .body(userResponse);
+        } catch (Exception e) {
+            System.out.println(e.getCause().getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT) // 409
+                    .header("message", "Email already in use")
+                    .build();
+        }
+
+    }
+}
+
+```
+
+```java
+// UserService
+
+@Component
+@RequiredArgsConstructor
+public class UserService {
+    private final UserRepository userRepository;
+
+    public UserResponse createUser(String email, String password) {
+        User newUser = new User(email, password);
+        User savedUser = userRepository.save(newUser);
+        return UserResponse.builder() // builds and returns UserResponse object
+                .id(savedUser.getId())
+                .email(savedUser.getEmail())
+                .build();
+    }
+}
+
+```
+
+```java
+// User
+
+@AllArgsConstructor
+@Entity
+@Table(name = "`user`", uniqueConstraints = {@UniqueConstraint(columnNames = "email")}) // sets unique contsraint for email column that it has to be unique
+@Data
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(name = "email", unique = true)
+    private String email;
+
+    @Column(name = "password")
+    private String password;
+
+    public User() {}
+
+    public User(String email, String password) {
+        this.email = email;
+        this. password = password;
+    }
+}
 ```
 
 ## DB Connection with Spring
@@ -121,6 +203,7 @@ public class PromptService {
     public PromptService(PromptRepository promptRepository) {
         this.promptRepository = promptRepository;
     }
+}
 ```
 
 ## Hibernate
@@ -150,9 +233,25 @@ public class User {
 
 ```
 
+## JpaRepository
+
+```java
+// UserRepository
+
+import com.dap.DailyArtPrompt.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findByEmail(String email); // defining a custom method for the interface. So long as the name is intuitive this will function properly
+}
+
+```
+
 ## Lombok
 
-- add depenedcy in build.gradle `id "io.freefair.lombok" version "5.0.0-rc2"`
+- add dependency in build.gradle `id "io.freefair.lombok" version "5.0.0-rc2"`
 
 ```java
 // User
@@ -162,9 +261,10 @@ import lombok.RequiredArgsConstructor;
 import javax.persistence.*;
 
  @Entity
- @Table(name = "`user`")
  @Data // annotation creates getters and setters
- @RequiredArgsConstructor // creates an All Args Constructor
+@Table(name = "`user`", uniqueConstraints = {@UniqueConstraint(columnNames = "email")}) // sets constraint that email column is unique
+@AllArgsConstructor
+@NoArgsConstructor
  public class User {
      @Id
      @GeneratedValue(strategy = GenerationType.AUTO)
@@ -176,6 +276,31 @@ import javax.persistence.*;
      @Column(name = "password")
      private String password;
  }
+```
+
+```java
+@Component
+@RequiredArgsConstructor // this allows you to declare that UserService class has a dependency of userRepository without writing it out (see long version below)
+public class UserService {
+    private final UserRepository userRepository;
+
+    public UserResponse createUser(String email, String password) {
+      
+    }
+}
+
+@Component
+//@RequiredArgsConstructor // needs constructor without this annotation
+public class UserService {
+    private final UserRepository userRepository;
+    
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public UserResponse createUser(String email, String password) {
+    }
+}
 ```
 
 # Testing

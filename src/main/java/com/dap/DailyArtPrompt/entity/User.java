@@ -1,12 +1,16 @@
 package com.dap.DailyArtPrompt.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-// TODO: add AllArgsConstructor
+
 @Entity
 @Table(name = "`user`", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,8 +21,6 @@ public class User {
 
     @Column(name = "password")
     private String password;
-
-    public User() {}
 
     public User(String email, String password) {
         this.email = email;

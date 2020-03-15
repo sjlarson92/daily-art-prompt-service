@@ -2,6 +2,7 @@ package com.dap.DailyArtPrompt.controller;
 
 import com.dap.DailyArtPrompt.model.UserResponse;
 import com.dap.DailyArtPrompt.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -24,11 +25,13 @@ public class UserController {
     ) {
         try {
             UserResponse userResponse = userService.createUser(email, password);
-            return ResponseEntity.ok(userResponse);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(userResponse);
         } catch (Exception e) {
             System.out.println(e.getCause().getMessage());
             return ResponseEntity
-                    .status(409)
+                    .status(HttpStatus.CONFLICT)
                     .header("message", "Email already in use")
                     .build();
         }

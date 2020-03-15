@@ -18,6 +18,5 @@ public class UserService {
                 .id(savedUser.getId())
                 .email(savedUser.getEmail())
                 .build();
-//        return new UserResponse(savedUser.getId(), savedUser.getEmail());
     }
 }
