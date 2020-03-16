@@ -64,7 +64,7 @@ public class UserController {
 @RequestMapping("/users")
 public class UserController {
     @PostMapping("")
-    public void createUser(
+    public void createUser( // method signiture (access, return, name and parameters)
             @RequestHeader Map<String, String> headers) {
         System.out.println("email is: " + email);
         System.out.println("password is: " + password);
@@ -154,6 +154,11 @@ public class User {
     }
 }
 ```
+
+
+## Exceptions
+
+
 
 ## DB Connection with Spring
 

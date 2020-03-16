@@ -2,7 +2,7 @@ package com.dap.DailyArtPrompt.controller;
 
 import com.dap.DailyArtPrompt.model.UserResponse;
 import com.dap.DailyArtPrompt.service.UserService;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
     UserService userService;
 
@@ -23,18 +24,7 @@ public class UserController {
         @RequestHeader("email") String email,
         @RequestHeader("password") String password
     ) {
-        try {
-            UserResponse userResponse = userService.createUser(email, password);
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(userResponse);
-        } catch (Exception e) {
-            System.out.println(e.getCause().getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .header("message", "Email already in use")
-                    .build();
-        }
-
+            log.info("Creating user with email: {}", email);
+            return userService.createUser(email, password);
     }
 }
