@@ -284,6 +284,20 @@ import javax.persistence.*;
 ```
 
 ```java
+@RestController
+@RequestMapping("/users")
+@Slf4j // this annotation is needed for loggers
+public class UserController {
+
+    @PostMapping("")
+    public ResponseEntity<UserResponse> createUser() {
+            log.info("Creating user with email: {}", email); // this creates an info log
+            return userService.createUser(email, password);
+    }
+}
+```
+
+```java
 @Component
 @RequiredArgsConstructor // this allows you to declare that UserService class has a dependency of userRepository without writing it out (see long version below)
 public class UserService {
