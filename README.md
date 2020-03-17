@@ -329,6 +329,8 @@ public class UserService {
 - change IntelliJ settings to allow Gradle to show test names: 
    - Preferences > Build, Execution, Deployment > Build Tools > Gradle > Run tests using `IntelliJ IDEA`
    - Make sure you select the correct application that you want this to apply to
+   
+   
  
 ## JUnit
 
@@ -353,6 +355,101 @@ test {
 `import static org.assertj.core.api.Assertions.assertThat;`
 
 - Change test name by using annotation `@DisplayName()`
+
+### Mockito
+
+```java
+// UserController - mocking an api call
+@WebMvcTest(UserController.class) // allows you to use MockMvc and run Spring
+@ExtendWith(MockitoExtension.class) // allows you to mock functions
+class UserControllerTest {
+    @Autowired
+    private MockMvc mockMvc; // instantiate mockMvc to call methods
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean // need this to mock service
+    UserService userService;
+
+    @Nested
+    @DisplayName("/users")
+    class createUser {
+
+        @Test
+        public void callsCreateUserWithCorrectParams() throws Exception {
+            UserResponse userResponse = UserResponse.builder()
+                    .id(1)
+                    .email("fakeEmail@testing.com")
+                    .build();
+
+            ResponseEntity<UserResponse> userResponseEntity= ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(userResponse);
+            when(userService
+                    .createUser("fakeEmail@testing.com", "NotMyPassword"))
+                    .thenReturn(userResponseEntity);
+
+            verify(userService).createUser("fakeEmail@testing.com", "NotMyPassword");
+            mockMvc.perform( // this is a "mocked api call"
+                post("/users")
+                    .header("email", "fakeEmail@testing.com")
+                    .header("password", "NotMyPassword")
+            );
+
+        }
+    }
+}
+
+```
+
+```java
+// PromptService
+
+@ExtendWith(MockitoExtension.class)
+class PromptServiceTest {
+    @Mock // mocks PromptRepository
+    PromptRepository promptRepository;
+
+    @InjectMocks // takes all @Mock and adds them as bean/dependencies to PromptService and instantiates it
+    PromptService promptService;
+
+    @Nested
+    class getAllPrompts {
+
+        @Nested
+        class whenRepoReturnsListOfPrompts {
+
+            @Test
+            public void shouldReturnMap() {
+                Prompt prompt = new Prompt("2020-02-23", "I need to do laundry");
+                List<Prompt> promptList = List.of(prompt);
+                when(promptRepository.findAll()).thenReturn(promptList);
+                Map<LocalDate, Prompt> expectedResult = new HashMap<>();
+                expectedResult.put(LocalDate.parse(prompt.getDate()), prompt);
+                assertThat(promptService.getAllPrompts()).isEqualTo(expectedResult);
+            }
+        }
+    }
+}
+
+
+```
+
+```java
+// UserService
+
+@Test
+public void returnsResponseEntityWithCorrectStatus() {
+    String email = "fakeEmail";
+    String password ="notAGoodPassword";
+    when(userRepository.save(any(User.class)))
+            .thenThrow(DataIntegrityViolationException.class); // mocking return to throw an exception, specifically DataIntegrityViolationException.class
+    assertThat(userService.createUser(email, password).getStatusCode())
+            .isEqualTo(HttpStatus.CONFLICT);
+}
+
+```
 
 ## Tips
 
