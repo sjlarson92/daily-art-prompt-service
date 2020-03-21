@@ -42,6 +42,124 @@ public class DogController {
 }
 ```
 
+```java
+// UserController
+// When we name a header specifically, the header is required by default
+// Requesting headers: 
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    @PostMapping("")
+    public void createUser(
+            @RequestHeader("email") String email, // this will pull headers individually by key
+            @RequestHeader("password") String password) {
+        System.out.println("email is: " + email);
+        System.out.println("password is: " + password);
+    }
+}
+
+// you can all request multiple headers all together in a map
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    @PostMapping("")
+    public void createUser( // method signiture (access, return, name and parameters)
+            @RequestHeader Map<String, String> headers) {
+        System.out.println("email is: " + email);
+        System.out.println("password is: " + password);
+    }
+}
+```
+
+```java
+
+// UserController
+// Handling Exceptions by returning  a ResponseEntity
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @PostMapping("")
+    public ResponseEntity<UserResponse> createUser(
+        @RequestHeader("email") String email,
+        @RequestHeader("password") String password
+    ) {
+        try {
+            UserResponse userResponse = userService.createUser(email, password);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED) // 201
+                    .body(userResponse);
+        } catch (Exception e) {
+            System.out.println(e.getCause().getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT) // 409
+                    .header("message", "Email already in use")
+                    .build();
+        }
+
+    }
+}
+
+```
+
+```java
+// UserService
+
+@Component
+@RequiredArgsConstructor
+public class UserService {
+    private final UserRepository userRepository;
+
+    public UserResponse createUser(String email, String password) {
+        User newUser = new User(email, password);
+        User savedUser = userRepository.save(newUser);
+        return UserResponse.builder() // builds and returns UserResponse object
+                .id(savedUser.getId())
+                .email(savedUser.getEmail())
+                .build();
+    }
+}
+
+```
+
+```java
+// User
+
+@AllArgsConstructor
+@Entity
+@Table(name = "`user`", uniqueConstraints = {@UniqueConstraint(columnNames = "email")}) // sets unique contsraint for email column that it has to be unique
+@Data
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(name = "email", unique = true)
+    private String email;
+
+    @Column(name = "password")
+    private String password;
+
+    public User() {}
+
+    public User(String email, String password) {
+        this.email = email;
+        this. password = password;
+    }
+}
+```
+
+
+## Exceptions
+
+
+
 ## DB Connection with Spring
 
 - You should have a application.properties file delete this and create a application.yml file instead and and the below code to it
@@ -90,6 +208,7 @@ public class PromptService {
     public PromptService(PromptRepository promptRepository) {
         this.promptRepository = promptRepository;
     }
+}
 ```
 
 ## Hibernate
@@ -98,6 +217,111 @@ public class PromptService {
 - ORM is basicaly making your models match db tables so that data aligns
 - used to overcome shortcomings of JDBC (java database connection)
 
+
+```java
+// User
+@Entity
+@Table(name = "`user`") //'user' is  a reserved word in postgres and so it needs to be written with ``
+@Data
+@RequiredArgsConstructor
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "password")
+    private String password;
+}
+
+```
+
+## JpaRepository
+
+```java
+// UserRepository
+
+import com.dap.DailyArtPrompt.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findByEmail(String email); // defining a custom method for the interface. So long as the name is intuitive this will function properly
+}
+
+```
+
+## Lombok
+
+- add dependency in build.gradle `id "io.freefair.lombok" version "5.0.0-rc2"`
+
+```java
+// User
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+import javax.persistence.*;
+
+ @Entity
+ @Data // annotation creates getters and setters
+@Table(name = "`user`", uniqueConstraints = {@UniqueConstraint(columnNames = "email")}) // sets constraint that email column is unique
+@AllArgsConstructor
+@NoArgsConstructor
+ public class User {
+     @Id
+     @GeneratedValue(strategy = GenerationType.AUTO)
+     private long id;
+ 
+     @Column(name = "email")
+     private String email;
+ 
+     @Column(name = "password")
+     private String password;
+ }
+```
+
+```java
+@RestController
+@RequestMapping("/users")
+@Slf4j // this annotation is needed for loggers
+public class UserController {
+
+    @PostMapping("")
+    public ResponseEntity<UserResponse> createUser() {
+            log.info("Creating user with email: {}", email); // this creates an info log
+            return userService.createUser(email, password);
+    }
+}
+```
+
+```java
+@Component
+@RequiredArgsConstructor // this allows you to declare that UserService class has a dependency of userRepository without writing it out (see long version below)
+public class UserService {
+    private final UserRepository userRepository;
+
+    public UserResponse createUser(String email, String password) {
+      
+    }
+}
+
+@Component
+//@RequiredArgsConstructor // needs constructor without this annotation
+public class UserService {
+    private final UserRepository userRepository;
+    
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public UserResponse createUser(String email, String password) {
+    }
+}
+```
+
 # Testing
 
 - a file like `fileName.java` will have a test file with a name of `fileNameTest.java`
@@ -105,6 +329,8 @@ public class PromptService {
 - change IntelliJ settings to allow Gradle to show test names: 
    - Preferences > Build, Execution, Deployment > Build Tools > Gradle > Run tests using `IntelliJ IDEA`
    - Make sure you select the correct application that you want this to apply to
+   
+   
  
 ## JUnit
 
@@ -129,6 +355,101 @@ test {
 `import static org.assertj.core.api.Assertions.assertThat;`
 
 - Change test name by using annotation `@DisplayName()`
+
+### Mockito
+
+```java
+// UserController - mocking an api call
+@WebMvcTest(UserController.class) // allows you to use MockMvc and run Spring
+@ExtendWith(MockitoExtension.class) // allows you to mock functions
+class UserControllerTest {
+    @Autowired
+    private MockMvc mockMvc; // instantiate mockMvc to call methods
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean // need this to mock service
+    UserService userService;
+
+    @Nested
+    @DisplayName("/users")
+    class createUser {
+
+        @Test
+        public void callsCreateUserWithCorrectParams() throws Exception {
+            UserResponse userResponse = UserResponse.builder()
+                    .id(1)
+                    .email("fakeEmail@testing.com")
+                    .build();
+
+            ResponseEntity<UserResponse> userResponseEntity= ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(userResponse);
+            when(userService
+                    .createUser("fakeEmail@testing.com", "NotMyPassword"))
+                    .thenReturn(userResponseEntity);
+
+            verify(userService).createUser("fakeEmail@testing.com", "NotMyPassword");
+            mockMvc.perform( // this is a "mocked api call"
+                post("/users")
+                    .header("email", "fakeEmail@testing.com")
+                    .header("password", "NotMyPassword")
+            );
+
+        }
+    }
+}
+
+```
+
+```java
+// PromptService
+
+@ExtendWith(MockitoExtension.class)
+class PromptServiceTest {
+    @Mock // mocks PromptRepository
+    PromptRepository promptRepository;
+
+    @InjectMocks // takes all @Mock and adds them as bean/dependencies to PromptService and instantiates it
+    PromptService promptService;
+
+    @Nested
+    class getAllPrompts {
+
+        @Nested
+        class whenRepoReturnsListOfPrompts {
+
+            @Test
+            public void shouldReturnMap() {
+                Prompt prompt = new Prompt("2020-02-23", "I need to do laundry");
+                List<Prompt> promptList = List.of(prompt);
+                when(promptRepository.findAll()).thenReturn(promptList);
+                Map<LocalDate, Prompt> expectedResult = new HashMap<>();
+                expectedResult.put(LocalDate.parse(prompt.getDate()), prompt);
+                assertThat(promptService.getAllPrompts()).isEqualTo(expectedResult);
+            }
+        }
+    }
+}
+
+
+```
+
+```java
+// UserService
+
+@Test
+public void returnsResponseEntityWithCorrectStatus() {
+    String email = "fakeEmail";
+    String password ="notAGoodPassword";
+    when(userRepository.save(any(User.class)))
+            .thenThrow(DataIntegrityViolationException.class); // mocking return to throw an exception, specifically DataIntegrityViolationException.class
+    assertThat(userService.createUser(email, password).getStatusCode())
+            .isEqualTo(HttpStatus.CONFLICT);
+}
+
+```
 
 ## Tips
 
