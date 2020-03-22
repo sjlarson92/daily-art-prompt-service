@@ -28,7 +28,7 @@ public class UserService {
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .header("message", "Email already in use")
+                    .header("message", "Email already in use. Please try again")
                     .build();
         }
 
