@@ -72,7 +72,7 @@ class UserServiceTest {
                 when(userRepository.save(any(User.class)))
                         .thenThrow(DataIntegrityViolationException.class);
                 assertThat(userService.createUser(email, password).getHeaders().get("message").get(0))
-                        .isEqualTo("Email already in use");
+                        .isEqualTo("Email already in use. Please try again");
             }
         }
     }
