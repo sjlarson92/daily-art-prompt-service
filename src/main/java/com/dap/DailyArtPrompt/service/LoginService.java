@@ -13,7 +13,7 @@ public class LoginService {
     private final UserRepository userRepository;
 
     public ResponseEntity<UserResponse> validateLogin(String email, String password) {
-//        System.out.println("Validating Login for email in LoginService: " + email);
+        System.out.println("Validating Login for email in LoginService: " + email);
 
             UserResponse userResponse = userRepository.findByEmailAndPassword(email, password);
             System.out.println("userResponse: " + userResponse);
