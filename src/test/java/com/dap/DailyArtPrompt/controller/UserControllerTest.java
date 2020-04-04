@@ -79,8 +79,8 @@ class UserControllerTest {
                     .thenReturn(userResponseEntity);
             mockMvc
                     .perform(post("/users")
-                    .header("email", "fakeEmail@testing.com")
-                    .header("password", "NotMyPassword"))
+                        .header("email", "fakeEmail@testing.com")
+                        .header("password", "NotMyPassword"))
                     .andExpect(content().string(objectMapper.writeValueAsString(userResponse)));
         }
     }

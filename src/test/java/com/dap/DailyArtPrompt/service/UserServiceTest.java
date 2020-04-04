@@ -27,7 +27,7 @@ class UserServiceTest {
     @Nested
     class createUser {
         @Nested
-        class whenEmailIsNotInDatabase {
+        class whenEmailIsInDatabase {
             @Test
             public void returnsResponseEntityWithCorrectStatus() {
                 String email = "fakeEmail";
@@ -54,7 +54,7 @@ class UserServiceTest {
         }
 
         @Nested
-        class whenEmailIsInDatabase {
+        class whenEmailIsNotInDatabase {
             @Test
             public void returnsResponseEntityWithCorrectStatus() {
                 String email = "fakeEmail";
