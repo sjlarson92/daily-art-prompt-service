@@ -28,7 +28,7 @@ class LoginServiceTest {
         class whenUserResponseIsNotFoundInDB {
             @Test
             public void returnsResponseEntityWithCorrectStatus() {
-                String email = "electronicmail@snob.com";
+                String email = "electronicmail@email.com";
                 String password = "notMyPassword";
                 when(userRepository.findByEmailAndPassword(email,password))
                         .thenReturn(null);
@@ -37,7 +37,12 @@ class LoginServiceTest {
             }
             @Test
             public void returnsResponseEntityWithCorrectHeader() {
-
+                String email = "electronicmail@email.com";
+                String password = "notMyPassword";
+                when(userRepository.findByEmailAndPassword(email,password))
+                        .thenReturn(null);
+                assertThat(loginService.validateLogin(email, password).getHeaders().get("message").get(0))
+                        .isEqualTo("An error occurred. Try again.");
             }
         }
 
@@ -45,11 +50,23 @@ class LoginServiceTest {
         class whenUserResponseIsFoundInDB {
             @Test
             public void returnsResponseEntityWithCorrectStatus() {
-
+                String email = "electronicmail@email.com";
+                String password = "notMyPassword";
+                UserResponse userResponse = new UserResponse(1, email);
+                when(userRepository.findByEmailAndPassword(email,password))
+                        .thenReturn(userResponse);
+                assertThat(loginService.validateLogin(email, password).getStatusCode())
+                        .isEqualTo(HttpStatus.ACCEPTED);
             }
             @Test
             public void returnsResponseEntityWithCorrectHeader() {
-
+                String email = "electronicmail@email.com";
+                String password = "notMyPassword";
+                UserResponse userResponse = new UserResponse(1, email);
+                when(userRepository.findByEmailAndPassword(email,password))
+                        .thenReturn(userResponse);
+                assertThat(loginService.validateLogin(email, password).getBody())
+                        .isEqualTo(userResponse);
             }
         }
     }
