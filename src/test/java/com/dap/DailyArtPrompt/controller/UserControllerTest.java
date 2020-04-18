@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.dap.DailyArtPrompt.model.UserResponse;
 import com.dap.DailyArtPrompt.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,11 @@ class UserControllerTest {
     @MockBean
     UserService userService;
 
+    @BeforeEach
+    public void clearMocks() {
+        reset(userService);
+    }
+
     @Nested
     @DisplayName("/users")
     class createUser {
@@ -48,13 +54,12 @@ class UserControllerTest {
             when(userService
                     .createUser("fakeEmail@testing.com", "NotMyPassword"))
                     .thenReturn(userResponseEntity);
-
-            verify(userService).createUser("fakeEmail@testing.com", "NotMyPassword");
             mockMvc.perform(
                 post("/users")
                     .header("email", "fakeEmail@testing.com")
                     .header("password", "NotMyPassword")
             );
+            verify(userService).createUser("fakeEmail@testing.com", "NotMyPassword");
 
         }
 
@@ -72,11 +77,10 @@ class UserControllerTest {
             when(userService
                     .createUser("fakeEmail@testing.com","NotMyPassword"))
                     .thenReturn(userResponseEntity);
-
             mockMvc
                     .perform(post("/users")
-                    .header("email", "fakeEmail@testing.com")
-                    .header("password", "NotMyPassword"))
+                        .header("email", "fakeEmail@testing.com")
+                        .header("password", "NotMyPassword"))
                     .andExpect(content().string(objectMapper.writeValueAsString(userResponse)));
         }
     }

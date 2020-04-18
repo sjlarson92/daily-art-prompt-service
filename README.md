@@ -330,7 +330,60 @@ public class UserService {
    - Preferences > Build, Execution, Deployment > Build Tools > Gradle > Run tests using `IntelliJ IDEA`
    - Make sure you select the correct application that you want this to apply to
    
+- Using Verify
+```java
+@BeforeEach
+    public void clearMocks() {
+        reset(loginService); // you need to clear the mock so that verify will act appropriately when there are other tests
+    }
+
+    @Nested
+    @DisplayName("/login")
+    class validateLogin {
+
+        @Test
+        public void callsValidateUserWithCorrectParams() throws Exception {
+            UserResponse userResponse = UserResponse.builder()
+                    .id(1)
+                    .email("email")
+                    .build();
+            ResponseEntity<UserResponse> userResponseEntity = ResponseEntity
+                    .status(HttpStatus.ACCEPTED)
+                    .body(userResponse);
+            when(loginService
+                    .validateLogin("email","password"))
+                    .thenReturn(userResponseEntity);
+
+            mockMvc.perform(
+                    post("/login")
+                        .with(httpBasic("email", "password"))
+            );
+            verify(loginService).validateLogin("email", "password"); // verify should run after the mocked api call
+        }
+```
+
+- @InjectMock vs @MockBean
+```java
+// UserServiceTest.java
+@Mock
+    UserRepository userRepository;
+
+@InjectMocks
+    UserService userService; // injectMocks injects all mocks made (userRepository) into userService and instantiates userService. This is used when testing classes
+
+```
    
+```java
+// UserControllerTest.java
+
+    @Autowired
+    private MockMvc mockMvc;
+
+
+    @MockBean
+    UserService userService; // mockBean mocks UserService and any methods from that class
+
+```
  
 ## JUnit
 
