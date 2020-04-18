@@ -2,6 +2,7 @@ package com.dap.DailyArtPrompt.controller;
 
 import com.dap.DailyArtPrompt.model.UserResponse;
 import com.dap.DailyArtPrompt.service.LoginService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 
+@Slf4j
 @RestController
 @RequestMapping("/login")
 public class LoginController {
@@ -20,7 +22,7 @@ public class LoginController {
     public ResponseEntity<UserResponse> validateLogin(
             @RequestHeader(value = "Authorization") String authorization
     ) {
-        System.out.println("----------Login Controller: " + authorization);
+        log.info("Login Controller: " + authorization);
         // code below decodes the authorization obj to email and password:
         String base64Credentials = authorization.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
