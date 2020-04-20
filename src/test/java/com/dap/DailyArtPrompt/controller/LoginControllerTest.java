@@ -1,11 +1,7 @@
 package com.dap.DailyArtPrompt.controller;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-
 import com.dap.DailyArtPrompt.model.UserResponse;
-import com.dap.DailyArtPrompt.service.UserService;
+import com.dap.DailyArtPrompt.service.LoginService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,9 +16,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(UserController.class)
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+
+@WebMvcTest(LoginController.class)
 @ExtendWith(MockitoExtension.class)
-class UserControllerTest {
+class LoginControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -30,58 +32,54 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    UserService userService;
+    LoginService loginService;
 
     @BeforeEach
     public void clearMocks() {
-        reset(userService);
+        reset(loginService);
     }
 
     @Nested
-    @DisplayName("/users")
-    class createUser {
+    @DisplayName("/login")
+    class validateLogin {
 
         @Test
-        public void callsCreateUserWithCorrectParams() throws Exception {
+        public void callsValidateUserWithCorrectParams() throws Exception {
             UserResponse userResponse = UserResponse.builder()
                     .id(1)
-                    .email("fakeEmail@testing.com")
+                    .email("email")
                     .build();
-
-            ResponseEntity<UserResponse> userResponseEntity= ResponseEntity
-                    .status(HttpStatus.CREATED)
+            ResponseEntity<UserResponse> userResponseEntity = ResponseEntity
+                    .status(HttpStatus.ACCEPTED)
                     .body(userResponse);
-            when(userService
-                    .createUser("fakeEmail@testing.com", "NotMyPassword"))
+            when(loginService
+                    .validateLogin("email","password"))
                     .thenReturn(userResponseEntity);
-            mockMvc.perform(
-                post("/users")
-                    .header("email", "fakeEmail@testing.com")
-                    .header("password", "NotMyPassword")
-            );
-            verify(userService).createUser("fakeEmail@testing.com", "NotMyPassword");
 
+            mockMvc.perform(
+                    post("/login")
+                        .with(httpBasic("email", "password"))
+            );
+            verify(loginService).validateLogin("email", "password");
         }
 
         @Test
-        public void returnsUserResponse() throws Exception {
+        public void returnsResponseEntityOfUserResponse() throws Exception{
             UserResponse userResponse = UserResponse.builder()
                     .id(1)
-                    .email("fakeEmail@testing.com")
+                    .email("email")
                     .build();
-
-            ResponseEntity<UserResponse> userResponseEntity= ResponseEntity
-                    .status(HttpStatus.CREATED)
+            ResponseEntity<UserResponse> userResponseEntity = ResponseEntity
+                    .status(HttpStatus.ACCEPTED)
                     .body(userResponse);
-
-            when(userService
-                    .createUser("fakeEmail@testing.com","NotMyPassword"))
+            when(loginService
+                    .validateLogin("email","password"))
                     .thenReturn(userResponseEntity);
             mockMvc
-                    .perform(post("/users")
-                        .header("email", "fakeEmail@testing.com")
-                        .header("password", "NotMyPassword"))
+                    .perform(post("/login")
+                            .with(httpBasic("email", "password")))
                     .andExpect(content().string(objectMapper.writeValueAsString(userResponse)));
         }
     }
+
 }

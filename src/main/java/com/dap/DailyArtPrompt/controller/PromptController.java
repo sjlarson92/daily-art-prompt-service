@@ -4,12 +4,15 @@ import com.dap.DailyArtPrompt.entity.Prompt;
 import com.dap.DailyArtPrompt.service.PromptService;
 import java.time.LocalDate;
 import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/prompts")
 public class PromptController {
@@ -23,7 +26,7 @@ public class PromptController {
     public Map<LocalDate, Prompt> getAllPrompts() {
         Map<LocalDate, Prompt> promptsMap = promptService.getAllPrompts();
 
-        System.out.println("Api /prompts returns map with following prompts: ");
+        log.info("Api /prompts returns map with following prompts: ");
         for (Prompt prompt : promptsMap.values()) {
             System.out.println(
                 "id: " +
