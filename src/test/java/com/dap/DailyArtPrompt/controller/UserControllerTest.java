@@ -1,9 +1,5 @@
 package com.dap.DailyArtPrompt.controller;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-
 import com.dap.DailyArtPrompt.model.UserResponse;
 import com.dap.DailyArtPrompt.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +15,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @WebMvcTest(UserController.class)
 @ExtendWith(MockitoExtension.class)
@@ -82,6 +83,18 @@ class UserControllerTest {
                         .header("email", "fakeEmail@testing.com")
                         .header("password", "NotMyPassword"))
                     .andExpect(content().string(objectMapper.writeValueAsString(userResponse)));
+        }
+    }
+
+    @Nested
+    class getUserImages {
+
+        @Test
+        public void returnsTheIdWhenCalled() throws Exception {
+            String id = "cool id";
+            mockMvc.perform(
+                    get("/users/" + id + "/images")
+            ).andExpect(content().string(id));
         }
     }
 }
