@@ -102,8 +102,8 @@ class UserControllerTest {
             @Test
             public void returnsAListOfImages() throws Exception {
                 long userId = 1234;
-                Image image1 = new Image(UUID.randomUUID(), userId, "src");
-                Image image2 = new Image(UUID.randomUUID(), userId, "some source");
+                Image image1 = new Image(UUID.randomUUID(), userId, "some name", "src", false, null);
+                Image image2 = new Image(UUID.randomUUID(), userId, "Bob", "some source", true, null);
 
                 List<Image> images = List.of(image1, image2);
                 when(imageRepository.findAllByUserId(userId)).thenReturn(images);

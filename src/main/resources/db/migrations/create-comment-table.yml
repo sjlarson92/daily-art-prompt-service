@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: SashinhaAndLuquinha
+      changes:
+        - createTable:
+            tableName: comment
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: image_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deleted
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: editing
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: text
+                  type: varchar(250)
