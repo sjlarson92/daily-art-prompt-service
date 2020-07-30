@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: SashinhaAndLuquinha
+      changes:
+        - createTable:
+            tableName: image
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int8
+                  constraints:
+                    nullable: false
+              - column:
+                  name: image_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: src
+                  type: varchar(250)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: liked
+                  type: boolean
+                  constraints:
+                    nullable: false

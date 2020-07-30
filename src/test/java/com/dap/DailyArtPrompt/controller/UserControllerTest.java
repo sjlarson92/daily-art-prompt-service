@@ -1,10 +1,8 @@
 package com.dap.DailyArtPrompt.controller;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-
+import com.dap.DailyArtPrompt.entity.Image;
 import com.dap.DailyArtPrompt.model.UserResponse;
+import com.dap.DailyArtPrompt.repository.ImageRepository;
 import com.dap.DailyArtPrompt.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +18,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+import java.util.UUID;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+
 @WebMvcTest(UserController.class)
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
@@ -31,6 +37,9 @@ class UserControllerTest {
 
     @MockBean
     UserService userService;
+
+    @MockBean
+    ImageRepository imageRepository;
 
     @BeforeEach
     public void clearMocks() {
@@ -82,6 +91,27 @@ class UserControllerTest {
                         .header("email", "fakeEmail@testing.com")
                         .header("password", "NotMyPassword"))
                     .andExpect(content().string(objectMapper.writeValueAsString(userResponse)));
+        }
+    }
+
+    @Nested
+    class getUserImages {
+
+        @Nested
+        class whenRepoHasImagesForGivenUser {
+            @Test
+            public void returnsAListOfImages() throws Exception {
+                long userId = 1234;
+                Image image1 = new Image(UUID.randomUUID(), userId, "some name", "src", false, null);
+                Image image2 = new Image(UUID.randomUUID(), userId, "Bob", "some source", true, null);
+
+                List<Image> images = List.of(image1, image2);
+                when(imageRepository.findAllByUserId(userId)).thenReturn(images);
+
+                mockMvc.perform(
+                        get("/users/" + userId + "/images")
+                ).andExpect(content().string(objectMapper.writeValueAsString(images)));
+            }
         }
     }
 }
