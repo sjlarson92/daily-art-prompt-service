@@ -1,11 +1,7 @@
 package com.dap.DailyArtPrompt.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
-import com.dap.DailyArtPrompt.model.Image;
-import com.dap.DailyArtPrompt.service.ImageService;
+import com.dap.DailyArtPrompt.entity.Image;
+import com.dap.DailyArtPrompt.repository.ImageRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,11 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ImageController.class)
 @ExtendWith(MockitoExtension.class)
 class ImageControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -28,41 +34,39 @@ class ImageControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    ImageService imageService;
+    ImageRepository imageRepository;
 
     @Nested
     @DisplayName("/images")
     class getImage {
 
         @Nested
-        @DisplayName("When ImageService returns an Image")
-        class whenImageServiceReturnsAnImage {
+        class whenImageWithIdExists {
 
             @Test
-            public void returnsTheImage() throws Exception {
-                Image image = new Image("image source");
-                when(imageService.getImage()).thenReturn(image);
-                MvcResult result = mockMvc.perform(get("/images/1")).andReturn();
-
-                String responseBodyString = result.getResponse().getContentAsString();
-                System.out.println("response: " + responseBodyString);
-                Image responseBody = objectMapper.readValue(responseBodyString, Image.class);
-
-                assertThat(responseBody).isEqualToComparingFieldByField(image);
+            public void shouldReturnImage() throws Exception {
+                UUID imageId = UUID.randomUUID();
+                Image image = new Image(imageId, 1234, "some name", "src", false, null);
+                when(imageRepository.findById(imageId)).thenReturn(Optional.of(image));
+                mockMvc.perform(
+                        get("/images/" + imageId)
+                ).andExpect(content().string(objectMapper.writeValueAsString(image)));
             }
         }
 
         @Nested
-        @DisplayName("When ImageService returns null")
-        class whenImageServiceReturnsNull {
+        class whenImageWithIdDoesNotExists {
 
             @Test
-            public void returnsEmptyString() throws Exception {
-                when(imageService.getImage()).thenReturn(null);
-                MvcResult result = mockMvc.perform(get("/images/1")).andReturn();
+            public void shouldReturn404() throws Exception {
+                UUID imageId = UUID.randomUUID();
+                when(imageRepository.findById(imageId)).thenReturn(Optional.empty());
+                String message = Objects.requireNonNull(
+                        mockMvc.perform(get("/images/" + imageId))
+                                .andExpect(status().isNotFound())
+                        .andReturn().getResolvedException()).getMessage();
 
-                String responseBodyString = result.getResponse().getContentAsString();
-                assertThat(responseBodyString).isEqualTo("");
+                assertThat(message).contains("No event found by given id: " + imageId);
             }
         }
     }

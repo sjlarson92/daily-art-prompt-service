@@ -19,7 +19,7 @@ public class UserController {
     UserService userService;
     ImageRepository imageRepository;
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<UserResponse> createUser(
         @RequestHeader("email") String email,
         @RequestHeader("password") String password
