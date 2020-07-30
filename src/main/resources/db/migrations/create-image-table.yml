@@ -18,7 +18,17 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: image_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
                   name: src
                   type: varchar(250)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: liked
+                  type: boolean
                   constraints:
                     nullable: false

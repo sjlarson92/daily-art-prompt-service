@@ -16,7 +16,6 @@ public class DataSourceConfig {
 
     @Bean
     public BasicDataSource dataSource() throws URISyntaxException {
-        System.out.println(">> DATABASE_URL: " + DATABASE_URL);
         URI dbUri = new URI(DATABASE_URL);
 
         String username = dbUri.getUserInfo().split(":")[0];

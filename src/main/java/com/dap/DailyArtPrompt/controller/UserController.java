@@ -4,7 +4,7 @@ import com.dap.DailyArtPrompt.entity.Image;
 import com.dap.DailyArtPrompt.model.UserResponse;
 import com.dap.DailyArtPrompt.repository.ImageRepository;
 import com.dap.DailyArtPrompt.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserController {
-    UserService userService;
-    ImageRepository imageRepository;
+
+    private final UserService userService;
+    private  final ImageRepository imageRepository;
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(
@@ -30,6 +31,7 @@ public class UserController {
 
     @GetMapping("/{id}/images")
     public List<Image> getUserImages(@PathVariable long id) {
+        log.info("Getting all images for user id: " + id);
         return imageRepository.findAllByUserId(id);
     }
 }

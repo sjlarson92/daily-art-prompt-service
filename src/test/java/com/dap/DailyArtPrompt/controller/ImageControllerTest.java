@@ -58,7 +58,7 @@ class ImageControllerTest {
         class whenImageWithIdDoesNotExists {
 
             @Test
-            public void shouldReturn404() throws Exception {
+            public void shouldReturn404WithCorrectErrorMessage() throws Exception {
                 UUID imageId = UUID.randomUUID();
                 when(imageRepository.findById(imageId)).thenReturn(Optional.empty());
                 String message = Objects.requireNonNull(
