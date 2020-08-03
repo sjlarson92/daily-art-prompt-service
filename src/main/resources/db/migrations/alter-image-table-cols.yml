@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: display-real-images-1
+      author: LaCosta
+      changes:
+        - renameColumn:
+            tableName:  image
+            oldColumnName:  image_name
+            newColumnName:  description
+            columnDataType:  varchar(250)
+  - changeSet:
+      id: display-real-images-2
+      author: LaCosta
+      changes:
+        - renameColumn:
+            tableName:  image
+            oldColumnName:  src
+            newColumnName:  url
+            columnDataType:  varchar(250)

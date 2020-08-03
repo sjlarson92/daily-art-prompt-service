@@ -20,6 +20,8 @@ dependencies {
 	implementation 'org.postgresql:postgresql'
 	implementation 'org.apache.commons:commons-dbcp2:2.7.0'
 	implementation 'org.liquibase:liquibase-core:4.0.0'
+	implementation platform('software.amazon.awssdk:bom:2.13.56')
+	implementation 'software.amazon.awssdk:s3'
 
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

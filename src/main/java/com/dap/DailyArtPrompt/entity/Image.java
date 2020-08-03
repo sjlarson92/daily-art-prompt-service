@@ -22,9 +22,9 @@ public class Image {
 
     private long userId;
 
-    private String imageName;
+    private String description;
 
-    private String src;
+    private String url;
 
     // TODO: add default value of false
     private boolean liked;
