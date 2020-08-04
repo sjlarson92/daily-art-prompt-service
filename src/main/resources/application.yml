@@ -9,3 +9,8 @@ spring:
     properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect # The SQL dialect makes Hibernate generate better SQL for the chosen database
 
 db-url: ${DATABASE_URL}
+
+s3:
+  bucket: ${S3_BUCKET}
+  access-key: ${ACCESS_KEY}
+  secret-key: ${SECRET_KEY}

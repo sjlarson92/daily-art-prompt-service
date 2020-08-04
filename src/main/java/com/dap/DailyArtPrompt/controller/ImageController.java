@@ -31,13 +31,13 @@ public class ImageController {
 
     private final AWSObjectsFactory awsObjectsFactory;
 
-    @Value("${S3_BUCKET}")
+    @Value("${s3.bucket}")
     String s3Bucket;
 
-    @Value("${ACCESS_KEY}")
+    @Value("${s3.access-key}")
     String accessKey;
 
-    @Value("${SECRET_KEY}")
+    @Value("${s3.secret-key}")
     String secretKey;
 
     @GetMapping("/images/{id}")
