@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/migrations/create-image-table.yml
   - include:
       file: db/migrations/create-comment-table.yml
+  - include:
+      file: db/migrations/alter-image-table-cols.yml

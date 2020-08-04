@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
@@ -20,7 +19,7 @@ public class UserController {
     private final UserService userService;
     private  final ImageRepository imageRepository;
 
-    @PostMapping
+    @PostMapping("/users")
     public ResponseEntity<UserResponse> createUser(
         @RequestHeader("email") String email,
         @RequestHeader("password") String password
@@ -29,7 +28,7 @@ public class UserController {
             return userService.createUser(email, password);
     }
 
-    @GetMapping("/{id}/images")
+    @GetMapping("/users/{id}/images")
     public List<Image> getUserImages(@PathVariable long id) {
         log.info("Getting all images for user id: " + id);
         return imageRepository.findAllByUserId(id);
