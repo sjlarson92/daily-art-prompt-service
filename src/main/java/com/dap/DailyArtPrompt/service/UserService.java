@@ -33,4 +33,8 @@ public class UserService {
         }
 
     }
+
+    public void createUserImage(long userId, String description) {
+
+    }
 }

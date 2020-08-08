@@ -1,8 +1,10 @@
 package com.dap.DailyArtPrompt.controller;
 
 import com.dap.DailyArtPrompt.entity.Image;
+import com.dap.DailyArtPrompt.model.ImageRequestBody;
 import com.dap.DailyArtPrompt.model.UserResponse;
 import com.dap.DailyArtPrompt.repository.ImageRepository;
+import com.dap.DailyArtPrompt.service.ImageService;
 import com.dap.DailyArtPrompt.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -41,9 +44,12 @@ class UserControllerTest {
     @MockBean
     ImageRepository imageRepository;
 
+    @MockBean
+    ImageService imageService;
+
     @BeforeEach
     public void clearMocks() {
-        reset(userService);
+        reset(userService, imageService);
     }
 
     @Nested
@@ -57,16 +63,16 @@ class UserControllerTest {
                     .email("fakeEmail@testing.com")
                     .build();
 
-            ResponseEntity<UserResponse> userResponseEntity= ResponseEntity
+            ResponseEntity<UserResponse> userResponseEntity = ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(userResponse);
             when(userService
                     .createUser("fakeEmail@testing.com", "NotMyPassword"))
                     .thenReturn(userResponseEntity);
             mockMvc.perform(
-                post("/users")
-                    .header("email", "fakeEmail@testing.com")
-                    .header("password", "NotMyPassword")
+                    post("/users")
+                            .header("email", "fakeEmail@testing.com")
+                            .header("password", "NotMyPassword")
             );
             verify(userService).createUser("fakeEmail@testing.com", "NotMyPassword");
 
@@ -79,17 +85,17 @@ class UserControllerTest {
                     .email("fakeEmail@testing.com")
                     .build();
 
-            ResponseEntity<UserResponse> userResponseEntity= ResponseEntity
+            ResponseEntity<UserResponse> userResponseEntity = ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(userResponse);
 
             when(userService
-                    .createUser("fakeEmail@testing.com","NotMyPassword"))
+                    .createUser("fakeEmail@testing.com", "NotMyPassword"))
                     .thenReturn(userResponseEntity);
             mockMvc
                     .perform(post("/users")
-                        .header("email", "fakeEmail@testing.com")
-                        .header("password", "NotMyPassword"))
+                            .header("email", "fakeEmail@testing.com")
+                            .header("password", "NotMyPassword"))
                     .andExpect(content().string(objectMapper.writeValueAsString(userResponse)));
         }
     }
@@ -113,5 +119,44 @@ class UserControllerTest {
                 ).andExpect(content().string(objectMapper.writeValueAsString(images)));
             }
         }
+    }
+
+    @Nested
+    class createUserImage {
+        long userId = 1234;
+
+        ImageRequestBody imageRequestBody = new ImageRequestBody(
+                "some description",
+                "im an image".getBytes()
+        );
+
+        @Test
+        public void passesUserIdAndDescriptionToUserService() throws Exception {
+            mockMvc.perform(
+                    post("/users/" + userId + "/images")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(imageRequestBody)));
+            verify(userService).createUserImage(userId, imageRequestBody.getDescription());
+        }
+
+        @Test
+        public void savesImageToS3() throws Exception {
+            mockMvc.perform(
+                    post("/users/" + userId + "/images")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(imageRequestBody)));
+            verify(imageService).saveImageToS3();
+        }
+
+        @Test
+        public void returnsTheImageRequestBody() throws Exception {
+            mockMvc.perform(
+                    post("/users/" + userId + "/images")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(imageRequestBody)))
+                    .andExpect(content()
+                            .string(objectMapper.writeValueAsString(imageRequestBody)));
+        }
+
     }
 }
