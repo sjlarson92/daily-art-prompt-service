@@ -38,12 +38,14 @@ public class UserController {
     }
 
     @PostMapping("/users/{id}/images")
-    public ImageRequestBody createUserImage(
+    public String createUserImage(
             @PathVariable long id,
-            @RequestBody ImageRequestBody imageRequestBody
+            @ModelAttribute ImageRequestBody imageRequestBody
     ) {
+        log.info("file: " + imageRequestBody.getFile());
+        log.info("description " + imageRequestBody.getDescription());
         userService.createUserImage(id, imageRequestBody.getDescription());
         imageService.saveImageToS3();
-        return imageRequestBody;
+        return "some image";
     }
 }
