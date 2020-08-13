@@ -44,7 +44,7 @@ public class UserController {
     ) {
         log.info("file: " + imageRequestBody.getFile());
         log.info("description " + imageRequestBody.getDescription());
-        userService.createUserImage(id, imageRequestBody.getDescription());
+        userService.createImageMetadata(id, imageRequestBody.getDescription());
         imageService.saveImageToS3();
         return "some image";
     }
