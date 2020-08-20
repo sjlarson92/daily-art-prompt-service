@@ -138,7 +138,7 @@ class UserControllerTest {
             mockMvc.perform(
                     post("/users/" + userId + "/images")
                             .flashAttr("imageRequestBody", imageRequestBody));
-            verify(userService).createUserImage(userId, imageRequestBody.getDescription());
+            verify(userService).createImageMetadata(userId, imageRequestBody.getDescription());
         }
 
         @Test

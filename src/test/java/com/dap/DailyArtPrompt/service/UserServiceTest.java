@@ -1,7 +1,9 @@
 package com.dap.DailyArtPrompt.service;
 
+import com.dap.DailyArtPrompt.entity.Image;
 import com.dap.DailyArtPrompt.entity.User;
 import com.dap.DailyArtPrompt.model.UserResponse;
+import com.dap.DailyArtPrompt.repository.ImageRepository;
 import com.dap.DailyArtPrompt.repository.UserRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,14 +14,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    ImageRepository imageRepository;
 
     @InjectMocks
     UserService userService;
@@ -73,6 +79,21 @@ class UserServiceTest {
                         .thenThrow(DataIntegrityViolationException.class);
                 assertThat(userService.createUser(email, password).getHeaders().get("message").get(0))
                         .isEqualTo("Email already in use. Please try again");
+            }
+        }
+    }
+
+    @Nested
+    class createImageMetadata {
+
+        @Nested
+        class whenGivenValidUserId {
+            @Test
+            public void saveNewImage() {
+                long userId = 2;
+                String description = "Halloween is coming soon!";
+                userService.createImageMetadata(userId, description);
+                verify(imageRepository).save(any(Image.class));
             }
         }
     }

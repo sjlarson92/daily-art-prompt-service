@@ -53,7 +53,11 @@ public class UserService {
                 .url(url)
                 .build();
         log.info("Attempting to save image metadata: " + newImage);
-        imageRepository.save(newImage);
+        try {
+            imageRepository.save(newImage);
+        } catch (Exception e) {
+            log.error("Failed to save image metadata for userId: " + userId + " with exception: " + e);
+        }
 
     }
 }
