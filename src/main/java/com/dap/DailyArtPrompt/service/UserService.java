@@ -7,6 +7,7 @@ import com.dap.DailyArtPrompt.repository.ImageRepository;
 import com.dap.DailyArtPrompt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
+
+    @Value("${dapBaseUrl}")
+    private final String dapBaseUrl;
+
 
     public ResponseEntity<UserResponse> createUser(String email, String password) throws DataIntegrityViolationException {
         User newUser = new User(email, password);
@@ -44,8 +49,7 @@ public class UserService {
 
     public void createImageMetadata(long userId, String description) {
         UUID imageId = UUID.randomUUID();
-        String baseUrl = "http://localhost:9000";
-        String url = baseUrl + "/api/images/" + imageId + "/content";
+        String url = dapBaseUrl + "/api/images/" + imageId + "/content";
         Image newImage = Image.builder()
                 .id(imageId)
                 .userId(userId)
@@ -53,11 +57,6 @@ public class UserService {
                 .url(url)
                 .build();
         log.info("Attempting to save image metadata: " + newImage);
-        try {
-            imageRepository.save(newImage);
-        } catch (Exception e) {
-            log.error("Failed to save image metadata for userId: " + userId + " with exception: " + e);
-        }
-
+        imageRepository.save(newImage);
     }
 }

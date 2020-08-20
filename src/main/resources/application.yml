@@ -14,3 +14,5 @@ s3:
   bucket: ${S3_BUCKET}
   access-key: ${ACCESS_KEY}
   secret-key: ${SECRET_KEY}
+
+dapBaseUrl: ${DAP_BASE_URL} # TODO: Add this var to prod

@@ -8,27 +8,23 @@ import com.dap.DailyArtPrompt.repository.UserRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-    @Mock
-    UserRepository userRepository;
 
-    @Mock
-    ImageRepository imageRepository;
+    UserRepository userRepository = mock(UserRepository.class);
+    ImageRepository imageRepository = mock(ImageRepository.class);
+    String dapBaseUrl = "any random url...";
 
-    @InjectMocks
-    UserService userService;
+    UserService userService = new UserService(userRepository, imageRepository, dapBaseUrl);
 
     @Nested
     class createUser {
@@ -93,7 +89,13 @@ class UserServiceTest {
                 long userId = 2;
                 String description = "Halloween is coming soon!";
                 userService.createImageMetadata(userId, description);
-                verify(imageRepository).save(any(Image.class));
+                ArgumentCaptor<Image> argumentCaptor = ArgumentCaptor.forClass(Image.class);
+                verify(imageRepository).save(argumentCaptor.capture());
+                Image image = argumentCaptor.getValue();
+                assertThat(image.getUserId()).isEqualTo(userId);
+                assertThat(image.getDescription()).isEqualTo(description);
+                assertThat(image.getUrl()).startsWith(dapBaseUrl + "/api/images");
+                assertThat(image.getUrl()).endsWith("/content");
             }
         }
     }
