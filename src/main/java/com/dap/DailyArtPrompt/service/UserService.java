@@ -17,14 +17,21 @@ import java.util.UUID;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
-
-    @Value("${dapBaseUrl}")
     private final String dapBaseUrl;
+
+    public UserService(
+            UserRepository userRepository,
+            ImageRepository imageRepository,
+            @Value("${dapBaseUrl}") String dapBaseUrl
+    ) {
+        this.userRepository = userRepository;
+        this.imageRepository = imageRepository;
+        this.dapBaseUrl = dapBaseUrl;
+    }
 
 
     public ResponseEntity<UserResponse> createUser(String email, String password) throws DataIntegrityViolationException {
