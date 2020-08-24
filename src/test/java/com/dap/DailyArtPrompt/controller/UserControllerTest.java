@@ -141,13 +141,16 @@ class UserControllerTest {
             verify(userService).createImageMetadata(userId, imageRequestBody.getDescription());
         }
 
-//        @Test
-//        public void savesImageToS3() throws Exception {
-//            mockMvc.perform(
-//                    post("/users/" + userId + "/images")
-//                            .flashAttr("imageRequestBody", imageRequestBody));
-//            verify(imageService).saveImageToS3();
-//        }
+        @Test
+        public void savesImageToS3() throws Exception {
+            UUID imageId = UUID.randomUUID();
+            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+                    .thenReturn(imageId);
+            mockMvc.perform(
+                    post("/users/" + userId + "/images")
+                            .flashAttr("imageRequestBody", imageRequestBody));
+            verify(imageService).saveImageToS3(imageId, imageRequestBody.getFile());
+        }
 
         @Test
         public void returnsString() throws Exception {
