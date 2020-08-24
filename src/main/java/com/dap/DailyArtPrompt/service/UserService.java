@@ -21,16 +21,16 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
-    private final String dapBaseUrl;
+    private final String gatewayBaseUrl;
 
     public UserService(
             UserRepository userRepository,
             ImageRepository imageRepository,
-            @Value("${dapBaseUrl}") String dapBaseUrl
+            @Value("${gatewayBaseUrl}") String gatewayBaseUrl
     ) {
         this.userRepository = userRepository;
         this.imageRepository = imageRepository;
-        this.dapBaseUrl = dapBaseUrl;
+        this.gatewayBaseUrl = gatewayBaseUrl;
     }
 
 
@@ -54,9 +54,9 @@ public class UserService {
 
     }
 
-    public void createImageMetadata(long userId, String description) {
+    public UUID createImageMetadata(long userId, String description) {
         UUID imageId = UUID.randomUUID();
-        String url = dapBaseUrl + "/api/images/" + imageId + "/content";
+        String url = gatewayBaseUrl + "/api/images/" + imageId + "/content";
         Image newImage = Image.builder()
                 .id(imageId)
                 .userId(userId)
@@ -65,5 +65,6 @@ public class UserService {
                 .build();
         log.info("Attempting to save image metadata: " + newImage);
         imageRepository.save(newImage);
+        return imageId;
     }
 }

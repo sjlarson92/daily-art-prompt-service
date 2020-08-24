@@ -81,22 +81,18 @@ class UserServiceTest {
 
     @Nested
     class createImageMetadata {
-
-        @Nested
-        class whenGivenValidUserId {
-            @Test
-            public void saveNewImage() {
-                long userId = 2;
-                String description = "Halloween is coming soon!";
-                userService.createImageMetadata(userId, description);
-                ArgumentCaptor<Image> argumentCaptor = ArgumentCaptor.forClass(Image.class);
-                verify(imageRepository).save(argumentCaptor.capture());
-                Image image = argumentCaptor.getValue();
-                assertThat(image.getUserId()).isEqualTo(userId);
-                assertThat(image.getDescription()).isEqualTo(description);
-                assertThat(image.getUrl()).startsWith(dapBaseUrl + "/api/images");
-                assertThat(image.getUrl()).endsWith("/content");
-            }
+        @Test
+        public void savesImageWithCorrectMetadata() {
+            long userId = 2;
+            String description = "Halloween is coming soon!";
+            userService.createImageMetadata(userId, description);
+            ArgumentCaptor<Image> argumentCaptor = ArgumentCaptor.forClass(Image.class);
+            verify(imageRepository).save(argumentCaptor.capture());
+            Image image = argumentCaptor.getValue();
+            assertThat(image.getUserId()).isEqualTo(userId);
+            assertThat(image.getDescription()).isEqualTo(description);
+            assertThat(image.getUrl()).startsWith(dapBaseUrl + "/api/images");
+            assertThat(image.getUrl()).endsWith("/content");
         }
     }
 }

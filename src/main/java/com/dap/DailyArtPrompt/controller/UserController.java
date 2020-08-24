@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @Slf4j
@@ -41,11 +43,11 @@ public class UserController {
     public String createUserImage(
             @PathVariable long id,
             @ModelAttribute ImageRequestBody imageRequestBody
-    ) {
+    ) throws IOException {
         log.info("file: " + imageRequestBody.getFile());
         log.info("description " + imageRequestBody.getDescription());
-        userService.createImageMetadata(id, imageRequestBody.getDescription());
-        imageService.saveImageToS3();
+        UUID imageId = userService.createImageMetadata(id, imageRequestBody.getDescription());
+        imageService.saveImageToS3(imageId, imageRequestBody.getFile());
         return "some image";
     }
 }
