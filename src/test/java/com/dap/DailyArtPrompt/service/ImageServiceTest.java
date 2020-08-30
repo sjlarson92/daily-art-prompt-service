@@ -8,15 +8,25 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.http.SdkHttpResponse;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.UUID;
 
@@ -123,6 +133,69 @@ class ImageServiceTest {
                     Region.US_EAST_2
             );
         }
+    }
+
+    @Nested
+    class saveImageToS3 {
+        UUID imageId = UUID.randomUUID();
+        Region region = Region.US_EAST_2;
+        String key = "dap/images/" + imageId;
+        String contentType = MediaType.IMAGE_PNG_VALUE;
+        MultipartFile file = new MockMultipartFile("some file name", "fake content".getBytes());
+        S3Client s3Client = S3Client.builder().region(region).build();
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(s3Bucket)
+                .key(key)
+                .contentType(contentType)
+                .build();
+        RequestBody requestBody = RequestBody.fromBytes(file.getBytes());
+        SdkHttpResponse sdkHttpResponse = SdkHttpResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .statusText("all good")
+                .build();
+        PutObjectResponse response = (PutObjectResponse) PutObjectResponse.builder()
+                .sdkHttpResponse(sdkHttpResponse)
+                .build();
+
+        saveImageToS3() throws IOException {
+        }
+
+        @BeforeEach
+        public void setMocks() throws IOException {
+            reset(awsObjectsFactory);
+            when(awsObjectsFactory.createS3Client(region)).thenReturn(s3Client);
+            when(awsObjectsFactory.createPutObjectRequest(
+                    s3Bucket,
+                    key,
+                    contentType)).thenReturn(putObjectRequest);
+            when(awsObjectsFactory.createRequestBody(file)).thenReturn(requestBody);
+            when(awsObjectsFactory.saveImage(s3Client, putObjectRequest, requestBody)).thenReturn(response);
+        }
+
+        @Test
+        public void createS3ClientIsCalledWithCorrectParam() throws IOException {
+            imageService.saveImageToS3(imageId, file);
+            verify(awsObjectsFactory).createS3Client(region);
+        }
+
+        @Test
+        public void createPutObjectRequestIsCalledWithCorrectParams() throws IOException {
+            imageService.saveImageToS3(imageId, file);
+            verify(awsObjectsFactory).createPutObjectRequest(s3Bucket, key, contentType);
+        }
+
+        @Test
+        public void createRequestBodyIsCalledWithCorrectParams() throws IOException {
+            imageService.saveImageToS3(imageId, file);
+            verify(awsObjectsFactory).createRequestBody(file);
+        }
+
+        @Test
+        public void saveImageIsCalledWithCorrectParams() throws IOException {
+            imageService.saveImageToS3(imageId, file);
+            verify(awsObjectsFactory).saveImage(s3Client, putObjectRequest, requestBody);
+        }
+
     }
 
 }

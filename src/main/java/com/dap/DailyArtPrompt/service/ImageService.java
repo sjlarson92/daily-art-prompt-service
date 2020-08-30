@@ -2,6 +2,7 @@ package com.dap.DailyArtPrompt.service;
 
 import com.dap.DailyArtPrompt.factory.AWSObjectsFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ImageService {
 
     private final AWSObjectsFactory awsObjectsFactory;
@@ -63,18 +65,15 @@ public class ImageService {
 
     public void saveImageToS3(UUID imageId, MultipartFile file) throws IOException {
 
-        S3Client s3Client = S3Client.builder().region(Region.US_EAST_2).build();
+        S3Client s3Client = awsObjectsFactory.createS3Client(Region.US_EAST_2);
 
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(s3Bucket)
-                .key("dap/images/" + imageId)
-                .contentType(MediaType.IMAGE_PNG_VALUE)
-                .build();
+        PutObjectRequest putObjectRequest = awsObjectsFactory
+                .createPutObjectRequest(s3Bucket,"dap/images/" + imageId, MediaType.IMAGE_PNG_VALUE);
 
-        RequestBody requestBody = RequestBody.fromBytes(file.getBytes());
+        RequestBody requestBody = awsObjectsFactory.createRequestBody(file);
 
-        PutObjectResponse response = s3Client.putObject(putObjectRequest, requestBody);
+        PutObjectResponse response = awsObjectsFactory.saveImage(s3Client, putObjectRequest, requestBody);
 
-        System.out.println("Response is: " + response.sdkHttpResponse().statusCode() + response.sdkHttpResponse().statusText());
+        log.info("Response is: " + response.sdkHttpResponse().statusCode() + response.sdkHttpResponse().statusText());
     }
 }
