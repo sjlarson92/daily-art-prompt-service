@@ -8,6 +8,7 @@ import com.dap.DailyArtPrompt.service.ImageService;
 import com.dap.DailyArtPrompt.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping("/users/{id}/images")
-    public String createUserImage(
+    public ResponseEntity createUserImage(
             @PathVariable long id,
             @ModelAttribute ImageRequestBody imageRequestBody
     ) throws IOException {
@@ -48,6 +49,6 @@ public class UserController {
         log.info("description " + imageRequestBody.getDescription());
         UUID imageId = userService.createImageMetadata(id, imageRequestBody.getDescription());
         imageService.saveImageToS3(imageId, imageRequestBody.getFile());
-        return "some image";
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 }
