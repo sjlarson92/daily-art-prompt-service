@@ -1,8 +1,10 @@
 package com.dap.DailyArtPrompt.controller;
 
 import com.dap.DailyArtPrompt.entity.Image;
+import com.dap.DailyArtPrompt.model.ImageRequestBody;
 import com.dap.DailyArtPrompt.model.UserResponse;
 import com.dap.DailyArtPrompt.repository.ImageRepository;
+import com.dap.DailyArtPrompt.service.ImageService;
 import com.dap.DailyArtPrompt.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +18,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +29,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
 @ExtendWith(MockitoExtension.class)
@@ -41,9 +46,12 @@ class UserControllerTest {
     @MockBean
     ImageRepository imageRepository;
 
+    @MockBean
+    ImageService imageService;
+
     @BeforeEach
     public void clearMocks() {
-        reset(userService);
+        reset(userService, imageService);
     }
 
     @Nested
@@ -57,16 +65,16 @@ class UserControllerTest {
                     .email("fakeEmail@testing.com")
                     .build();
 
-            ResponseEntity<UserResponse> userResponseEntity= ResponseEntity
+            ResponseEntity<UserResponse> userResponseEntity = ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(userResponse);
             when(userService
                     .createUser("fakeEmail@testing.com", "NotMyPassword"))
                     .thenReturn(userResponseEntity);
             mockMvc.perform(
-                post("/users")
-                    .header("email", "fakeEmail@testing.com")
-                    .header("password", "NotMyPassword")
+                    post("/users")
+                            .header("email", "fakeEmail@testing.com")
+                            .header("password", "NotMyPassword")
             );
             verify(userService).createUser("fakeEmail@testing.com", "NotMyPassword");
 
@@ -79,17 +87,17 @@ class UserControllerTest {
                     .email("fakeEmail@testing.com")
                     .build();
 
-            ResponseEntity<UserResponse> userResponseEntity= ResponseEntity
+            ResponseEntity<UserResponse> userResponseEntity = ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(userResponse);
 
             when(userService
-                    .createUser("fakeEmail@testing.com","NotMyPassword"))
+                    .createUser("fakeEmail@testing.com", "NotMyPassword"))
                     .thenReturn(userResponseEntity);
             mockMvc
                     .perform(post("/users")
-                        .header("email", "fakeEmail@testing.com")
-                        .header("password", "NotMyPassword"))
+                            .header("email", "fakeEmail@testing.com")
+                            .header("password", "NotMyPassword"))
                     .andExpect(content().string(objectMapper.writeValueAsString(userResponse)));
         }
     }
@@ -113,5 +121,65 @@ class UserControllerTest {
                 ).andExpect(content().string(objectMapper.writeValueAsString(images)));
             }
         }
+    }
+
+    @Nested
+    class createUserImage {
+        long userId = 1234;
+        UUID imageId = UUID.randomUUID();
+        MultipartFile file = new MockMultipartFile(
+                "file",
+                "some string".getBytes());
+        ImageRequestBody imageRequestBody = new ImageRequestBody(
+                "some description",
+                file
+        );
+        Image image = Image.builder()
+                .userId(123)
+                .id(imageId)
+                .description(imageRequestBody.getDescription())
+                .build();
+
+        @Test
+        public void passesUserIdAndDescriptionToUserService() throws Exception {
+            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+                    .thenReturn(image);
+            mockMvc.perform(
+                    post("/users/" + userId + "/images")
+                            .flashAttr("imageRequestBody", imageRequestBody));
+            verify(userService).createImageMetadata(userId, imageRequestBody.getDescription());
+        }
+
+        @Test
+        public void savesImageToS3() throws Exception {
+            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+                    .thenReturn(image);
+            mockMvc.perform(
+                    post("/users/" + userId + "/images")
+                            .flashAttr("imageRequestBody", imageRequestBody));
+            verify(imageService).saveImageToS3(imageId, imageRequestBody.getFile());
+        }
+
+        @Test
+        public void returnsImage() throws Exception {
+            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+                    .thenReturn(image);
+            mockMvc.perform(
+                    post("/users/" + userId + "/images")
+                            .flashAttr("imageRequestBody", imageRequestBody))
+                    .andExpect(content()
+                            .string(objectMapper.writeValueAsString(image)));
+        }
+
+        @Test
+        public void returnsCorrectStatus() throws Exception {
+            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+                    .thenReturn(image);
+            mockMvc.perform(
+                    post("/users/" + userId + "/images")
+                        .flashAttr("imageRequestBody", imageRequestBody)
+            ).andExpect(status().is(201));
+        }
+
     }
 }
