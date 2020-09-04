@@ -54,7 +54,7 @@ public class UserService {
 
     }
 
-    public UUID createImageMetadata(long userId, String description) {
+    public Image createImageMetadata(long userId, String description) {
         UUID imageId = UUID.randomUUID();
         String url = gatewayBaseUrl + "/api/images/" + imageId + "/content";
         Image newImage = Image.builder()
@@ -64,7 +64,6 @@ public class UserService {
                 .url(url)
                 .build();
         log.info("Attempting to save image metadata: " + newImage);
-        imageRepository.save(newImage);
-        return imageId;
+        return imageRepository.save(newImage);
     }
 }
