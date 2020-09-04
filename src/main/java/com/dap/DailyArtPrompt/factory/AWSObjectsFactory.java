@@ -55,8 +55,11 @@ public class AWSObjectsFactory {
                 .build();
     }
 
-    public S3Client createS3Client(Region region) {
-        return S3Client.builder().region(region).build();
+    public S3Client createS3Client(Region region, AwsCredentialsProvider awsCredentialsProvider) {
+        return S3Client.builder()
+                .region(region)
+                .credentialsProvider(awsCredentialsProvider)
+                .build();
     }
 
     public PutObjectRequest createPutObjectRequest(

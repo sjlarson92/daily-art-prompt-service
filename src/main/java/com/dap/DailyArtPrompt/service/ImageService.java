@@ -65,7 +65,10 @@ public class ImageService {
 
     public void saveImageToS3(UUID imageId, MultipartFile file) throws IOException {
 
-        S3Client s3Client = awsObjectsFactory.createS3Client(Region.US_EAST_2);
+        AwsCredentialsProvider awsCredentialsProvider = awsObjectsFactory.createAwsCredentialsProvider(
+                accessKey, secretKey);
+
+        S3Client s3Client = awsObjectsFactory.createS3Client(Region.US_EAST_2, awsCredentialsProvider);
 
         PutObjectRequest putObjectRequest = awsObjectsFactory
                 .createPutObjectRequest(s3Bucket,"dap/images/" + imageId, MediaType.IMAGE_PNG_VALUE);

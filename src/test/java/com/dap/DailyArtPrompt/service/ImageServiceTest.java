@@ -156,6 +156,8 @@ class ImageServiceTest {
         PutObjectResponse response = (PutObjectResponse) PutObjectResponse.builder()
                 .sdkHttpResponse(sdkHttpResponse)
                 .build();
+        AwsCredentialsProvider awsCredentialsProvider = StaticCredentialsProvider.create(
+                AwsBasicCredentials.create(accessKey, secretKey));
 
         saveImageToS3() throws IOException {
         }
@@ -163,7 +165,11 @@ class ImageServiceTest {
         @BeforeEach
         public void setMocks() throws IOException {
             reset(awsObjectsFactory);
-            when(awsObjectsFactory.createS3Client(region)).thenReturn(s3Client);
+            when(awsObjectsFactory.createAwsCredentialsProvider(
+                    accessKey,
+                    secretKey
+            )).thenReturn(awsCredentialsProvider);
+            when(awsObjectsFactory.createS3Client(region, awsCredentialsProvider)).thenReturn(s3Client);
             when(awsObjectsFactory.createPutObjectRequest(
                     s3Bucket,
                     key,
@@ -175,7 +181,7 @@ class ImageServiceTest {
         @Test
         public void createS3ClientIsCalledWithCorrectParam() throws IOException {
             imageService.saveImageToS3(imageId, file);
-            verify(awsObjectsFactory).createS3Client(region);
+            verify(awsObjectsFactory).createS3Client(region, awsCredentialsProvider);
         }
 
         @Test
