@@ -41,7 +41,8 @@ public class UserController {
     }
 
     @PostMapping("/users/{id}/images")
-    public ResponseEntity<Image> createUserImage(
+    @ResponseStatus(HttpStatus.CREATED)
+    public Image createUserImage(
             @PathVariable long id,
             @ModelAttribute ImageRequestBody imageRequestBody
     ) throws IOException {
@@ -49,6 +50,6 @@ public class UserController {
         log.info("description " + imageRequestBody.getDescription());
         Image image = userService.createImageMetadata(id, imageRequestBody.getDescription());
         imageService.saveImageToS3(image.getId(), imageRequestBody.getFile());
-        return new ResponseEntity<>(image, HttpStatus.CREATED);
+        return image;
     }
 }

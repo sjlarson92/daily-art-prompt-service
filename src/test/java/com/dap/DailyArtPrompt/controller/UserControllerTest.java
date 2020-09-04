@@ -29,6 +29,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
 @ExtendWith(MockitoExtension.class)
@@ -125,6 +126,7 @@ class UserControllerTest {
     @Nested
     class createUserImage {
         long userId = 1234;
+        UUID imageId = UUID.randomUUID();
         MultipartFile file = new MockMultipartFile(
                 "file",
                 "some string".getBytes());
@@ -132,9 +134,16 @@ class UserControllerTest {
                 "some description",
                 file
         );
+        Image image = Image.builder()
+                .userId(123)
+                .id(imageId)
+                .description(imageRequestBody.getDescription())
+                .build();
 
         @Test
         public void passesUserIdAndDescriptionToUserService() throws Exception {
+            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+                    .thenReturn(image);
             mockMvc.perform(
                     post("/users/" + userId + "/images")
                             .flashAttr("imageRequestBody", imageRequestBody));
@@ -143,9 +152,8 @@ class UserControllerTest {
 
         @Test
         public void savesImageToS3() throws Exception {
-            UUID imageId = UUID.randomUUID();
             when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
-                    .thenReturn(imageId);
+                    .thenReturn(image);
             mockMvc.perform(
                     post("/users/" + userId + "/images")
                             .flashAttr("imageRequestBody", imageRequestBody));
@@ -153,12 +161,24 @@ class UserControllerTest {
         }
 
         @Test
-        public void returnsString() throws Exception {
+        public void returnsImage() throws Exception {
+            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+                    .thenReturn(image);
             mockMvc.perform(
                     post("/users/" + userId + "/images")
                             .flashAttr("imageRequestBody", imageRequestBody))
                     .andExpect(content()
-                            .string("some image"));
+                            .string(objectMapper.writeValueAsString(image)));
+        }
+
+        @Test
+        public void returnsCorrectStatus() throws Exception {
+            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+                    .thenReturn(image);
+            mockMvc.perform(
+                    post("/users/" + userId + "/images")
+                        .flashAttr("imageRequestBody", imageRequestBody)
+            ).andExpect(status().is(201));
         }
 
     }

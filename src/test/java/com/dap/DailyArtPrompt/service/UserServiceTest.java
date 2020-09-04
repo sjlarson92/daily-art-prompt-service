@@ -73,6 +73,7 @@ class UserServiceTest {
                 String password ="notAGoodPassword";
                 when(userRepository.save(any(User.class)))
                         .thenThrow(DataIntegrityViolationException.class);
+                //noinspection ConstantConditions
                 assertThat(userService.createUser(email, password).getHeaders().get("message").get(0))
                         .isEqualTo("Email already in use. Please try again");
             }
@@ -93,6 +94,19 @@ class UserServiceTest {
             assertThat(image.getDescription()).isEqualTo(description);
             assertThat(image.getUrl()).startsWith(dapBaseUrl + "/api/images");
             assertThat(image.getUrl()).endsWith("/content");
+        }
+
+        @Test
+        public void returnsSavedImage() {
+            String description = "your mom is a desc";
+            long userId = 9999;
+            Image image = Image.builder()
+                    .description(description)
+                    .userId(userId)
+                    .build();
+            when(imageRepository.save(any(Image.class))).thenReturn(image);
+            Image result = userService.createImageMetadata(userId, description);
+            assertThat(result).isEqualTo(image);
         }
     }
 }
