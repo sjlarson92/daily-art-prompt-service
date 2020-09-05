@@ -121,17 +121,4 @@ databaseChangeLog:
         columnNames: email
         constraintName: ukhl4ga9r00rh51mdaf20hmnslt
         tableName: user
-- changeSet:
-    id: 1599337837434-7
-    author: sasha (generated)
-    changes:
-    - createSequence:
-        cacheSize: 1
-        cycle: false
-        dataType: bigint
-        incrementBy: 1
-        maxValue: 9223372036854775807
-        minValue: 1
-        sequenceName: hibernate_sequence
-        startValue: 1
 
