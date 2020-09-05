@@ -1,3 +1,4 @@
+#THIS IS NOT BEING USED AND IS ONLY FOR REFERENCE
 databaseChangeLog:
   - changeSet:
       id: display-real-images-1

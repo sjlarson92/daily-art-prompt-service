@@ -1,0 +1,137 @@
+databaseChangeLog:
+- changeSet:
+    id: 1599337837434-1
+    author: sasha (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: comment_pkey
+            name: id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+            name: image_id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+            name: deleted
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            name: editing
+            type: BOOLEAN
+        - column:
+            name: text
+            type: VARCHAR(250)
+        tableName: comment
+- changeSet:
+    id: 1599337837434-2
+    author: sasha (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: image_pkey
+            name: id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+            name: user_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: description
+            type: VARCHAR(50)
+        - column:
+            constraints:
+              nullable: false
+            name: url
+            type: VARCHAR(250)
+        - column:
+            constraints:
+              nullable: false
+            name: liked
+            type: BOOLEAN
+        tableName: image
+- changeSet:
+    id: 1599337837434-3
+    author: sasha (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: prompt_pkey
+            name: id
+            type: BIGINT
+        - column:
+            name: date
+            type: VARCHAR(255)
+        - column:
+            name: text
+            type: VARCHAR(255)
+        tableName: prompt
+- changeSet:
+    id: 1599337837434-4
+    author: sasha (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: user_pkey
+            name: id
+            type: BIGINT
+        - column:
+            name: email
+            type: VARCHAR(255)
+        - column:
+            name: password
+            type: VARCHAR(255)
+        tableName: user
+- changeSet:
+    id: 1599337837434-5
+    author: sasha (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: email
+        constraintName: uk_ob8kqyqqgmefl0aco34akdtpe
+        tableName: user
+- changeSet:
+    id: 1599337837434-6
+    author: sasha (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: email
+        constraintName: ukhl4ga9r00rh51mdaf20hmnslt
+        tableName: user
+- changeSet:
+    id: 1599337837434-7
+    author: sasha (generated)
+    changes:
+    - createSequence:
+        cacheSize: 1
+        cycle: false
+        dataType: bigint
+        incrementBy: 1
+        maxValue: 9223372036854775807
+        minValue: 1
+        sequenceName: hibernate_sequence
+        startValue: 1
+
