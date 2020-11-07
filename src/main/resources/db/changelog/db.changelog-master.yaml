@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: db/migrations/initial-db-schema.yml
+  - include:
+      file: db/migrations/alter-prompt-table-cols.yml
