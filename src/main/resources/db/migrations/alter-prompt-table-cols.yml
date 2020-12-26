@@ -3,39 +3,19 @@ databaseChangeLog:
       id: create-prompts-1
       author: Sasha
       changes:
-        - dropColumn:
-            tableName: prompt
-            columnName: id
-  - changeSet:
-      id: create-prompts-2
-      author: Sasha
-      changes:
-        - addColumn:
-            tableName: prompt
-            columns:
-              - column:
-                  name: id
-                  type: UUID
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-  - changeSet:
-      id: create-prompts-3
-      author: Sasha
-      changes:
         - modifyDataType:
             tableName: prompt
             columnName: date
             newDataType: date
   - changeSet:
-      id: create-prompts-4
+      id: create-prompts-2
       author: Sasha
       changes:
         - addUniqueConstraint:
             tableName: prompt
             columnNames: id
   - changeSet:
-      id: create-prompts-5
+      id: create-prompts-3
       author: Sasha
       changes:
         - addUniqueConstraint:

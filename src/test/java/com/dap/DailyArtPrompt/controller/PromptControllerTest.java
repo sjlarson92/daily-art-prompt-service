@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -42,9 +44,8 @@ class PromptControllerTest {
             @Test
             public void shouldReturnMap() throws Exception {
                 Map<LocalDate, Prompt> promptsMap = new HashMap<>();
-                Prompt prompt = new Prompt("2020-02-22", "I am a prompt");
-                LocalDate date = LocalDate.parse("2020-02-22");
-                promptsMap.put(date, prompt);
+                Prompt prompt = new Prompt(UUID.randomUUID(), LocalDate.now(), "I am a prompt");
+                promptsMap.put(prompt.getDate(), prompt);
                 when(promptService.getAllPrompts()).thenReturn(promptsMap);
 
                 mockMvc

@@ -18,11 +18,11 @@ public class PromptController {
 
     final PromptService promptService;
 
-//    @GetMapping("/prompts")
-//    public Map<LocalDate, Prompt> getAllPrompts() {
-//        log.info("Fetching prompts");
-//        return promptService.getAllPrompts();
-//    }
+    @GetMapping("/prompts")
+    public Map<LocalDate, Prompt> getAllPrompts() {
+        log.info("Fetching prompts");
+        return promptService.getAllPrompts();
+    }
 
     @PostMapping("/prompts")
     public void createPrompts() {

@@ -6,10 +6,8 @@ import static org.mockito.Mockito.when;
 import com.dap.DailyArtPrompt.entity.Prompt;
 import com.dap.DailyArtPrompt.repository.PromptRepository;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,11 +31,11 @@ class PromptServiceTest {
 
             @Test
             public void shouldReturnMap() {
-                Prompt prompt = new Prompt("2020-02-23", "I need to do laundry");
+                Prompt prompt = new Prompt(UUID.randomUUID(), LocalDate.now(), "I need to do laundry");
                 List<Prompt> promptList = List.of(prompt);
                 when(promptRepository.findAll()).thenReturn(promptList);
                 Map<LocalDate, Prompt> expectedResult = new HashMap<>();
-                expectedResult.put(LocalDate.parse(prompt.getDate()), prompt);
+                expectedResult.put(prompt.getDate(), prompt);
                 assertThat(promptService.getAllPrompts()).isEqualTo(expectedResult);
             }
         }
