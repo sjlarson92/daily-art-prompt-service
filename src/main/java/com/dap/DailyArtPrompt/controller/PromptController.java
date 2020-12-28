@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PromptController {
 
+    // TODO: delete prod tables!!!
+
     final PromptService promptService;
 
     @GetMapping("/prompts")

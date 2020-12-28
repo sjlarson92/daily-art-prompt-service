@@ -1,7 +1,9 @@
 package com.dap.DailyArtPrompt.controller;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import com.dap.DailyArtPrompt.entity.Prompt;
@@ -52,6 +54,15 @@ class PromptControllerTest {
                     .perform(get("/prompts"))
                     .andExpect(content().string(objectMapper.writeValueAsString(promptsMap)));
             }
+        }
+    }
+
+    @Nested
+    class createPrompts {
+        @Test
+        public void shouldCallCreatePrompts() throws Exception {
+            mockMvc.perform(post("/prompts"));
+            verify(promptService).createPrompts();
         }
     }
 }
