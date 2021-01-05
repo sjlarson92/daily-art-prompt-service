@@ -33,7 +33,7 @@ public class PromptService {
     }
 
     public void createPrompts() {
-        String wordAmount = "2"; // TODO: Change me to 100 before pushing to prod
+        int wordAmount = 100;
         List<String> response = restTemplate.exchange(
                 "https://random-word-api.herokuapp.com/word?swear=0&number=" + wordAmount,
                 HttpMethod.GET,
