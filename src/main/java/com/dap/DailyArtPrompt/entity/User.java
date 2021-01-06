@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "`user`", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
+@Table(name = "`user`")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,15 +24,15 @@ public class User {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private Role role;
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
-        this.role = UserRole.FEEDER;
+        this.role = Role.FEEDER;
     }
 
-    public enum UserRole {
+    public enum Role {
         GODLIKE,
         FEEDER
     }

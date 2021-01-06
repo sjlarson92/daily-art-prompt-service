@@ -53,7 +53,7 @@ class LoginServiceTest {
             public void returnsResponseEntityWithCorrectStatus() {
                 String email = "electronicmail@email.com";
                 String password = "notMyPassword";
-                UserResponse userResponse = new UserResponse(1, email, User.UserRole.FEEDER);
+                UserResponse userResponse = new UserResponse(1, email, User.Role.FEEDER);
                 when(userRepository.findByEmailAndPassword(email,password))
                         .thenReturn(userResponse);
                 assertThat(loginService.validateLogin(email, password).getStatusCode())
@@ -63,7 +63,7 @@ class LoginServiceTest {
             public void returnsResponseEntityWithCorrectHeader() {
                 String email = "electronicmail@email.com";
                 String password = "notMyPassword";
-                UserResponse userResponse = new UserResponse(1, email, User.UserRole.FEEDER);
+                UserResponse userResponse = new UserResponse(1, email, User.Role.FEEDER);
                 when(userRepository.findByEmailAndPassword(email,password))
                         .thenReturn(userResponse);
                 assertThat(loginService.validateLogin(email, password).getBody())

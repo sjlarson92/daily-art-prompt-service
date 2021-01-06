@@ -11,6 +11,6 @@ import lombok.Data;
 public class UserResponse {
     private long id;
     private String email;
-    private User.UserRole role;
+    private User.Role role;
 
 }

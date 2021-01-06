@@ -41,6 +41,7 @@ public class UserService {
             UserResponse userResponse = UserResponse.builder()
                     .id(savedUser.getId())
                     .email(savedUser.getEmail())
+                    .role(savedUser.getRole())
                     .build();
             return ResponseEntity
                     .status(HttpStatus.CREATED)
