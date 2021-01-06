@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-role-col-to-user-table-1
+      author: Sasha
+      changes:
+        - addColumn:
+            tableName: user
+            columns:
+              - column:
+                  name: role
+                  type: varchar(250)
+

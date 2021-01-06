@@ -1,5 +1,6 @@
 package com.dap.DailyArtPrompt.model;
 
+import com.dap.DailyArtPrompt.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,5 +11,6 @@ import lombok.Data;
 public class UserResponse {
     private long id;
     private String email;
+    private User.UserRole role;
 
 }

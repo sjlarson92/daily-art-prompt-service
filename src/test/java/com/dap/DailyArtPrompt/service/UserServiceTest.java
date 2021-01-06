@@ -34,7 +34,7 @@ class UserServiceTest {
             public void returnsResponseEntityWithCorrectStatus() {
                 String email = "fakeEmail";
                 String password ="notAGoodPassword";
-                User testUser = new User(1,email, password);
+                User testUser = new User(email, password);
                 when(userRepository.save(any(User.class))).thenReturn(testUser);
                 assertThat(userService.createUser(email, password).getStatusCode())
                         .isEqualTo(HttpStatus.CREATED);
@@ -44,7 +44,7 @@ class UserServiceTest {
             public void returnsResponseEntityWithCorrectBody() {
                 String email = "fakeEmail";
                 String password ="notAGoodPassword";
-                User testUser = new User(1, email, password);
+                User testUser = new User(email, password);
                 UserResponse userResponse = UserResponse.builder()
                         .id(testUser.getId())
                         .email(testUser.getEmail())

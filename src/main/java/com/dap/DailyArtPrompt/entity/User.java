@@ -16,14 +16,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "email", unique = true)
+    @Column
     private String email;
 
-    @Column(name = "password")
+    @Column
     private String password;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     public User(String email, String password) {
         this.email = email;
-        this. password = password;
+        this.password = password;
+        this.role = UserRole.FEEDER;
+    }
+
+    public enum UserRole {
+        GODLIKE,
+        FEEDER
     }
 }

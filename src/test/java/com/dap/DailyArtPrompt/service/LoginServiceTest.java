@@ -1,5 +1,6 @@
 package com.dap.DailyArtPrompt.service;
 
+import com.dap.DailyArtPrompt.entity.User;
 import com.dap.DailyArtPrompt.model.UserResponse;
 import com.dap.DailyArtPrompt.repository.UserRepository;
 import org.junit.jupiter.api.Nested;
@@ -52,7 +53,7 @@ class LoginServiceTest {
             public void returnsResponseEntityWithCorrectStatus() {
                 String email = "electronicmail@email.com";
                 String password = "notMyPassword";
-                UserResponse userResponse = new UserResponse(1, email);
+                UserResponse userResponse = new UserResponse(1, email, User.UserRole.FEEDER);
                 when(userRepository.findByEmailAndPassword(email,password))
                         .thenReturn(userResponse);
                 assertThat(loginService.validateLogin(email, password).getStatusCode())
@@ -62,7 +63,7 @@ class LoginServiceTest {
             public void returnsResponseEntityWithCorrectHeader() {
                 String email = "electronicmail@email.com";
                 String password = "notMyPassword";
-                UserResponse userResponse = new UserResponse(1, email);
+                UserResponse userResponse = new UserResponse(1, email, User.UserRole.FEEDER);
                 when(userRepository.findByEmailAndPassword(email,password))
                         .thenReturn(userResponse);
                 assertThat(loginService.validateLogin(email, password).getBody())
