@@ -1,34 +1,24 @@
 package com.dap.DailyArtPrompt.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Prompt {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
 
-    private String date;
+    @Id
+    private UUID id;
+
+    private LocalDate date;
 
     private String text;
-
-    public Prompt() {}
-
-    public Prompt(String date, String text) {
-        this.date = date;
-        this.text = text;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getText() {
-        return text;
-    }
 }

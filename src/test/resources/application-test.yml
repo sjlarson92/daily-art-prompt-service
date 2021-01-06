@@ -4,7 +4,6 @@ ACCESS_KEY: 'some key'
 SECRET_KEY: 'secrets dont make friends'
 GATEWAY_BASE_URL: 'http://somehost:$$$$'
 
-
 spring:
   flyway:
     enabled: false

@@ -1,7 +1,9 @@
 package com.dap.DailyArtPrompt.controller;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import com.dap.DailyArtPrompt.entity.Prompt;
@@ -10,6 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -42,15 +46,23 @@ class PromptControllerTest {
             @Test
             public void shouldReturnMap() throws Exception {
                 Map<LocalDate, Prompt> promptsMap = new HashMap<>();
-                Prompt prompt = new Prompt("2020-02-22", "I am a prompt");
-                LocalDate date = LocalDate.parse("2020-02-22");
-                promptsMap.put(date, prompt);
+                Prompt prompt = new Prompt(UUID.randomUUID(), LocalDate.now(), "I am a prompt");
+                promptsMap.put(prompt.getDate(), prompt);
                 when(promptService.getAllPrompts()).thenReturn(promptsMap);
 
                 mockMvc
                     .perform(get("/prompts"))
                     .andExpect(content().string(objectMapper.writeValueAsString(promptsMap)));
             }
+        }
+    }
+
+    @Nested
+    class createPrompts {
+        @Test
+        public void shouldCallCreatePrompts() throws Exception {
+            mockMvc.perform(post("/prompts"));
+            verify(promptService).createPrompts();
         }
     }
 }

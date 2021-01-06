@@ -72,12 +72,11 @@ databaseChangeLog:
     - createTable:
         columns:
         - column:
-            constraints:
-              nullable: false
-              primaryKey: true
-              primaryKeyName: prompt_pkey
             name: id
-            type: BIGINT
+            type: UUID
+            constraints:
+              primaryKey: true
+              nullable: false
         - column:
             name: date
             type: VARCHAR(255)
