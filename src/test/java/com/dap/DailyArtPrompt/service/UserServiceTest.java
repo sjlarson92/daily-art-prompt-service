@@ -48,6 +48,7 @@ class UserServiceTest {
                 UserResponse userResponse = UserResponse.builder()
                         .id(testUser.getId())
                         .email(testUser.getEmail())
+                        .role(testUser.getRole())
                         .build();
                 when(userRepository.save(any(User.class))).thenReturn(testUser);
                 assertThat(userService.createUser(email,password).getBody())
