@@ -79,7 +79,7 @@ class PromptServiceTest {
     class createPrompts {
         @Test
         public void shouldCallCorrectApiWithCorrectParams() {
-            String wordAmount = "2";
+            int wordAmount = 100;
             ResponseEntity<List<String>> responseEntity = new ResponseEntity<>(List.of("winter", "wonderland"), HttpStatus.ACCEPTED);
             when(restTemplate.exchange(
                     "https://random-word-api.herokuapp.com/word?swear=0&number=" + wordAmount,
@@ -97,8 +97,9 @@ class PromptServiceTest {
 
         @Test
         public void shouldSaveNewPrompts() {
-            String wordAmount = "2";
-            ResponseEntity<List<String>> responseEntity = new ResponseEntity<>(List.of("winter", "wonderland"), HttpStatus.ACCEPTED);
+            int wordAmount = 100;
+            List<String> words = List.of("winter", "wonderland");
+            ResponseEntity<List<String>> responseEntity = new ResponseEntity<>(words, HttpStatus.ACCEPTED);
             when(restTemplate.exchange(
                     "https://random-word-api.herokuapp.com/word?swear=0&number=" + wordAmount,
                     HttpMethod.GET,
@@ -106,7 +107,7 @@ class PromptServiceTest {
                     new ParameterizedTypeReference<List<String>>() {}
             )).thenReturn(responseEntity);
             promptService.createPrompts();
-            verify(promptRepository, times(parseInt(wordAmount))).save(any(Prompt.class));
+            verify(promptRepository, times(words.size())).save(any(Prompt.class));
         }
 
     }
