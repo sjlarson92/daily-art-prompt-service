@@ -8,6 +8,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +24,10 @@ public class PromptController {
         log.info("Fetching prompts");
         return promptService.getAllPrompts();
     }
-
     @PostMapping("/prompts")
-    public void createPrompts() {
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createPrompts(@RequestParam long userId) {
         log.info("Generating prompts");
-        promptService.createPrompts();
+        promptService.createPrompts(userId);
     }
 }

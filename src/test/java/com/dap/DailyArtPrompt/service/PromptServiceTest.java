@@ -1,14 +1,9 @@
 package com.dap.DailyArtPrompt.service;
 
-import static java.lang.Integer.parseInt;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
-
 import com.dap.DailyArtPrompt.entity.Prompt;
+import com.dap.DailyArtPrompt.entity.User;
 import com.dap.DailyArtPrompt.repository.PromptRepository;
-import java.time.LocalDate;
-import java.util.*;
-
+import com.dap.DailyArtPrompt.repository.UserRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,11 +15,22 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PromptServiceTest {
     @Mock
     PromptRepository promptRepository;
+
+    @Mock
+    UserRepository userRepository;
 
     @Mock
     private RestTemplate restTemplate;
@@ -77,38 +83,82 @@ class PromptServiceTest {
 
     @Nested
     class createPrompts {
-        @Test
-        public void shouldCallCorrectApiWithCorrectParams() {
-            int wordAmount = 100;
-            ResponseEntity<List<String>> responseEntity = new ResponseEntity<>(List.of("winter", "wonderland"), HttpStatus.ACCEPTED);
-            when(restTemplate.exchange(
-                    "https://random-word-api.herokuapp.com/word?swear=0&number=" + wordAmount,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<List<String>>() {}
-                    )).thenReturn(responseEntity);
-            promptService.createPrompts();
-            verify(restTemplate).exchange(
-                    "https://random-word-api.herokuapp.com/word?swear=0&number=" + wordAmount,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<List<String>>() {});
+
+        @Nested
+        class whenUserIsGODLIKE {
+            @Test
+            public void shouldCallCorrectApiWithCorrectParams() {
+                long userId = 1;
+                int wordAmount = 100;
+                User godlikeUser = new User();
+                godlikeUser.setRole(User.Role.GODLIKE);
+                ResponseEntity<List<String>> responseEntity = new ResponseEntity<>(List.of("winter", "wonderland"), HttpStatus.ACCEPTED);
+                when(userRepository.findById(userId)).thenReturn(Optional.of(godlikeUser));
+                when(restTemplate.exchange(
+                        "https://random-word-api.herokuapp.com/word?swear=0&number=" + wordAmount,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<List<String>>() {}
+                )).thenReturn(responseEntity);
+                promptService.createPrompts(userId);
+                verify(restTemplate).exchange(
+                        "https://random-word-api.herokuapp.com/word?swear=0&number=" + wordAmount,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<List<String>>() {});
+            }
+
+            @Test
+            public void shouldSaveNewPrompts() {
+                long userId = 1;
+                int wordAmount = 100;
+                User godlikeUser = new User();
+                godlikeUser.setRole(User.Role.GODLIKE);
+                List<String> words = List.of("winter", "wonderland");
+                ResponseEntity<List<String>> responseEntity = new ResponseEntity<>(words, HttpStatus.ACCEPTED);
+                when(userRepository.findById(userId)).thenReturn(Optional.of(godlikeUser));
+                when(restTemplate.exchange(
+                        "https://random-word-api.herokuapp.com/word?swear=0&number=" + wordAmount,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<List<String>>() {}
+                )).thenReturn(responseEntity);
+                promptService.createPrompts(1);
+                verify(promptRepository, times(words.size())).save(any(Prompt.class));
+            }
         }
 
-        @Test
-        public void shouldSaveNewPrompts() {
-            int wordAmount = 100;
-            List<String> words = List.of("winter", "wonderland");
-            ResponseEntity<List<String>> responseEntity = new ResponseEntity<>(words, HttpStatus.ACCEPTED);
-            when(restTemplate.exchange(
-                    "https://random-word-api.herokuapp.com/word?swear=0&number=" + wordAmount,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<List<String>>() {}
-            )).thenReturn(responseEntity);
-            promptService.createPrompts();
-            verify(promptRepository, times(words.size())).save(any(Prompt.class));
+        @Nested
+        class whenUserIsNotGODLIKE {
+
+            @Test
+            public void shouldThrowUnauthorizedException() {
+                long userId = 1;
+                User godlikeUser = new User();
+                godlikeUser.setRole(User.Role.FEEDER);
+                when(userRepository.findById(userId)).thenReturn(Optional.of(godlikeUser));
+                assertThatThrownBy(() -> promptService.createPrompts(userId))
+                        .isInstanceOf(ResponseStatusException.class)
+                        .hasMessageContaining(HttpStatus.UNAUTHORIZED.toString())
+                        .hasMessageContaining("User is not authorized to add prompts.");
+
+            }
         }
+
+        @Nested
+        class whenUserDoesNotExist {
+
+            @Test
+            public void shouldThrowNotFoundException() {
+                long userId = 1;
+                when(userRepository.findById(userId)).thenReturn(Optional.empty());
+                assertThatThrownBy(() -> promptService.createPrompts(userId))
+                        .isInstanceOf(ResponseStatusException.class)
+                        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
+                        .hasMessageContaining("User with id: " + userId + " could not be found in db");
+            }
+        }
+
 
     }
 }
