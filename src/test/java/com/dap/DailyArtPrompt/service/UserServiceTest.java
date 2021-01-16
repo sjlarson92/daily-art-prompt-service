@@ -95,6 +95,7 @@ class UserServiceTest {
             verify(imageRepository).save(argumentCaptor.capture());
             Image image = argumentCaptor.getValue();
             assertThat(image.getUserId()).isEqualTo(userId);
+            assertThat(image.getPromptId()).isEqualTo(promptId);
             assertThat(image.getDescription()).isEqualTo(description);
             assertThat(image.getUrl()).startsWith(dapBaseUrl + "/api/images");
             assertThat(image.getUrl()).endsWith("/content");
