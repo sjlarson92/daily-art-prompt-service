@@ -44,11 +44,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public Image createUserImage(
             @PathVariable long id,
+            @RequestParam UUID promptId,
             @ModelAttribute ImageRequestBody imageRequestBody
     ) throws IOException {
         log.info("file: " + imageRequestBody.getFile());
         log.info("description " + imageRequestBody.getDescription());
-        Image image = userService.createImageMetadata(id, imageRequestBody.getDescription());
+        Image image = userService.createImageMetadata(id, promptId, imageRequestBody.getDescription());
         imageService.saveImageToS3(image.getId(), imageRequestBody.getFile());
         return image;
     }

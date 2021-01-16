@@ -13,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -86,8 +88,9 @@ class UserServiceTest {
         @Test
         public void savesImageWithCorrectMetadata() {
             long userId = 2;
+            UUID promptId = UUID.randomUUID();
             String description = "Halloween is coming soon!";
-            userService.createImageMetadata(userId, description);
+            userService.createImageMetadata(userId, promptId, description);
             ArgumentCaptor<Image> argumentCaptor = ArgumentCaptor.forClass(Image.class);
             verify(imageRepository).save(argumentCaptor.capture());
             Image image = argumentCaptor.getValue();
@@ -101,12 +104,13 @@ class UserServiceTest {
         public void returnsSavedImage() {
             String description = "your mom is a desc";
             long userId = 9999;
+            UUID promptId = UUID.randomUUID();
             Image image = Image.builder()
                     .description(description)
                     .userId(userId)
                     .build();
             when(imageRepository.save(any(Image.class))).thenReturn(image);
-            Image result = userService.createImageMetadata(userId, description);
+            Image result = userService.createImageMetadata(userId, promptId, description);
             assertThat(result).isEqualTo(image);
         }
     }
