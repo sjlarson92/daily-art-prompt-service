@@ -110,8 +110,8 @@ class UserControllerTest {
             @Test
             public void returnsAListOfImages() throws Exception {
                 long userId = 1234;
-                Image image1 = new Image(UUID.randomUUID(), userId, "some desc", "url", false, null);
-                Image image2 = new Image(UUID.randomUUID(), userId, "I am an image", "some url", true, null);
+                Image image1 = new Image(UUID.randomUUID(), UUID.randomUUID(), userId, "some desc", "url", false, null);
+                Image image2 = new Image(UUID.randomUUID(), UUID.randomUUID(), userId, "I am an image", "some url", true, null);
 
                 List<Image> images = List.of(image1, image2);
                 when(imageRepository.findAllByUserId(userId)).thenReturn(images);
@@ -127,6 +127,8 @@ class UserControllerTest {
     class createUserImage {
         long userId = 1234;
         UUID imageId = UUID.randomUUID();
+        UUID promptId = UUID.randomUUID();
+        String userImageUrl = "/users/" + userId + "/images?promptId=" + promptId;
         MultipartFile file = new MockMultipartFile(
                 "file",
                 "some string".getBytes());
@@ -141,31 +143,31 @@ class UserControllerTest {
                 .build();
 
         @Test
-        public void passesUserIdAndDescriptionToUserService() throws Exception {
-            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+        public void passesCorrectParamsToUserService() throws Exception {
+            when(userService.createImageMetadata(userId, promptId, imageRequestBody.getDescription()))
                     .thenReturn(image);
             mockMvc.perform(
-                    post("/users/" + userId + "/images")
+                    post(userImageUrl)
                             .flashAttr("imageRequestBody", imageRequestBody));
-            verify(userService).createImageMetadata(userId, imageRequestBody.getDescription());
+            verify(userService).createImageMetadata(userId, promptId, imageRequestBody.getDescription());
         }
 
         @Test
         public void savesImageToS3() throws Exception {
-            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+            when(userService.createImageMetadata(userId, promptId, imageRequestBody.getDescription()))
                     .thenReturn(image);
             mockMvc.perform(
-                    post("/users/" + userId + "/images")
+                    post(userImageUrl)
                             .flashAttr("imageRequestBody", imageRequestBody));
             verify(imageService).saveImageToS3(imageId, imageRequestBody.getFile());
         }
 
         @Test
         public void returnsImage() throws Exception {
-            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+            when(userService.createImageMetadata(userId, promptId, imageRequestBody.getDescription()))
                     .thenReturn(image);
             mockMvc.perform(
-                    post("/users/" + userId + "/images")
+                    post(userImageUrl)
                             .flashAttr("imageRequestBody", imageRequestBody))
                     .andExpect(content()
                             .string(objectMapper.writeValueAsString(image)));
@@ -173,10 +175,10 @@ class UserControllerTest {
 
         @Test
         public void returnsCorrectStatus() throws Exception {
-            when(userService.createImageMetadata(userId, imageRequestBody.getDescription()))
+            when(userService.createImageMetadata(userId, promptId, imageRequestBody.getDescription()))
                     .thenReturn(image);
             mockMvc.perform(
-                    post("/users/" + userId + "/images")
+                    post(userImageUrl)
                         .flashAttr("imageRequestBody", imageRequestBody)
             ).andExpect(status().is(201));
         }

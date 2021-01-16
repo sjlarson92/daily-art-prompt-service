@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-promptId-to-image-table-1
+      author: Sasha
+      changes:
+        - addColumn:
+            tableName: image
+            columns:
+              - column:
+                  name: prompt_id
+                  type: UUID

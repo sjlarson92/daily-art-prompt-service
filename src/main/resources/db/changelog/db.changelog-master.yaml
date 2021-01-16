@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/migrations/alter-prompt-table-cols.yml
   - include:
       file: db/migrations/alter-user-table-cols.yml
+  - include:
+      file: db/migrations/add-promptId-to-image-table.yml
