@@ -22,6 +22,7 @@ dependencies {
 	implementation 'org.liquibase:liquibase-core:4.0.0'
 	implementation platform('software.amazon.awssdk:bom:2.13.56')
 	implementation 'software.amazon.awssdk:s3'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:2.4.2'
 
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
