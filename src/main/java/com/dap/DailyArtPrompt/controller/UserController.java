@@ -53,4 +53,5 @@ public class UserController {
         imageService.saveImageToS3(image.getId(), imageRequestBody.getFile());
         return image;
     }
+
 }

@@ -37,7 +37,7 @@ public class PromptService {
         return allPromptsMap;
     }
 
-    public void createPrompts(long userId) {
+    public void createPrompts(UUID userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id: " + userId + " could not be found in db.");
