@@ -61,8 +61,9 @@ class PromptControllerTest {
     class createPrompts {
         @Test
         public void shouldCallCreatePrompts() throws Exception {
-            mockMvc.perform(post("/prompts?userId=12"));
-            verify(promptService).createPrompts(12);
+            UUID userId = UUID.randomUUID();
+            mockMvc.perform(post("/prompts?userId=" + userId));
+            verify(promptService).createPrompts(userId);
         }
     }
 }

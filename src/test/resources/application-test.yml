@@ -7,3 +7,5 @@ GATEWAY_BASE_URL: 'http://somehost:$$$$'
 spring:
   flyway:
     enabled: false
+
+management.health.defaults.enabled: false

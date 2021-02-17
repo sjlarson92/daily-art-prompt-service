@@ -88,7 +88,7 @@ class PromptServiceTest {
         class whenUserIsGODLIKE {
             @Test
             public void shouldCallCorrectApiWithCorrectParams() {
-                long userId = 1;
+                UUID userId = UUID.randomUUID();
                 int wordAmount = 100;
                 User godlikeUser = new User();
                 godlikeUser.setRole(User.Role.GODLIKE);
@@ -110,7 +110,7 @@ class PromptServiceTest {
 
             @Test
             public void shouldSaveNewPrompts() {
-                long userId = 1;
+                UUID userId = UUID.randomUUID();
                 int wordAmount = 100;
                 User godlikeUser = new User();
                 godlikeUser.setRole(User.Role.GODLIKE);
@@ -123,7 +123,7 @@ class PromptServiceTest {
                         null,
                         new ParameterizedTypeReference<List<String>>() {}
                 )).thenReturn(responseEntity);
-                promptService.createPrompts(1);
+                promptService.createPrompts(userId);
                 verify(promptRepository, times(words.size())).save(any(Prompt.class));
             }
         }
@@ -133,7 +133,7 @@ class PromptServiceTest {
 
             @Test
             public void shouldThrowUnauthorizedException() {
-                long userId = 1;
+                UUID userId = UUID.randomUUID();
                 User godlikeUser = new User();
                 godlikeUser.setRole(User.Role.FEEDER);
                 when(userRepository.findById(userId)).thenReturn(Optional.of(godlikeUser));
@@ -150,7 +150,7 @@ class PromptServiceTest {
 
             @Test
             public void shouldThrowNotFoundException() {
-                long userId = 1;
+                UUID userId = UUID.randomUUID();
                 when(userRepository.findById(userId)).thenReturn(Optional.empty());
                 assertThatThrownBy(() -> promptService.createPrompts(userId))
                         .isInstanceOf(ResponseStatusException.class)

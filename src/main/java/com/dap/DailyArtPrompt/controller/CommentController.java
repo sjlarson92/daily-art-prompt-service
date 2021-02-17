@@ -1,5 +1,6 @@
 package com.dap.DailyArtPrompt.controller;
 
+import com.dap.DailyArtPrompt.entity.Comment;
 import com.dap.DailyArtPrompt.model.CommentRequestBody;
 import com.dap.DailyArtPrompt.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/comments")
-    public void createComment(@RequestBody CommentRequestBody commentRequestBody) {
-        commentService.createComment(commentRequestBody);
+    public Comment createComment(@RequestBody CommentRequestBody commentRequestBody) {
+        return commentService.createComment(commentRequestBody);
     }
 
     @GetMapping("/comments")

@@ -24,7 +24,7 @@ public class Image {
 
     private UUID promptId;
 
-    private long userId;
+    private UUID userId;
 
     private String description;
 

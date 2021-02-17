@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -22,6 +23,8 @@ public class Comment {
     private UUID userId;
 
     private String text;
+
+    private OffsetDateTime createdAt;
 
 
 }

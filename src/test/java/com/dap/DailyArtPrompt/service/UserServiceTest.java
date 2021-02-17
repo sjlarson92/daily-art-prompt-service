@@ -87,7 +87,7 @@ class UserServiceTest {
     class createImageMetadata {
         @Test
         public void savesImageWithCorrectMetadata() {
-            long userId = 2;
+            UUID userId = UUID.randomUUID();
             UUID promptId = UUID.randomUUID();
             String description = "Halloween is coming soon!";
             userService.createImageMetadata(userId, promptId, description);
@@ -104,7 +104,7 @@ class UserServiceTest {
         @Test
         public void returnsSavedImage() {
             String description = "your mom is a desc";
-            long userId = 9999;
+            UUID userId = UUID.randomUUID();
             UUID promptId = UUID.randomUUID();
             Image image = Image.builder()
                     .description(description)
