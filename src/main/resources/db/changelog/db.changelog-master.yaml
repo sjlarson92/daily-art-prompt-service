@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/migrations/add-promptId-to-image-table.yml
   - include:
       file: db/migrations/alter-user-table-id.yml
+  - include:
+      file: db/migrations/alter-image-table-userid-col.yml

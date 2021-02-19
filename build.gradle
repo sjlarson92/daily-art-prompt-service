@@ -30,7 +30,7 @@ dependencies {
 	}
 	testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
 	testCompile group: 'org.springframework.security', name: 'spring-security-test', version: '4.0.0.RELEASE'
-	testCompile group: 'io.zonky.test', name: 'embedded-database-spring-test', version: '1.5.4'
+	testCompile group: 'io.zonky.test', name: 'embedded-database-spring-test', version: '1.6.3'
 }
 
 test {
