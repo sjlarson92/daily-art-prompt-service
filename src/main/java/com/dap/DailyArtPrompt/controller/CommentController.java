@@ -6,6 +6,8 @@ import com.dap.DailyArtPrompt.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
@@ -13,7 +15,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/comments")
-    public Comment createComment(@RequestBody CommentRequestBody commentRequestBody) {
+    public Comment createComment(@Valid @RequestBody CommentRequestBody commentRequestBody) {
         return commentService.createComment(commentRequestBody);
     }
 

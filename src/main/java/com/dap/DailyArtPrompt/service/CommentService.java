@@ -23,7 +23,6 @@ public class CommentService {
                 commentRequestBody.getText(),
                 OffsetDateTime.now()
         );
-        System.out.println("comment" + comment);
         return commentRepository.save(comment);
     }
 }
