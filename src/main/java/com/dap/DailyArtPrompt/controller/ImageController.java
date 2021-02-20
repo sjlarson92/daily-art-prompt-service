@@ -35,4 +35,5 @@ public class ImageController {
         log.info("Fetching image with id: " + id);
         return imageService.getImageContent(id);
     }
+
 }

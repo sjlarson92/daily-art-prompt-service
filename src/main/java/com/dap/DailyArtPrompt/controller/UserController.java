@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/images")
-    public List<Image> getUserImages(@PathVariable long id) {
+    public List<Image> getUserImages(@PathVariable UUID id) {
         log.info("Getting all images for user id: " + id);
         return imageRepository.findAllByUserId(id);
     }
@@ -43,7 +43,7 @@ public class UserController {
     @PostMapping("/users/{id}/images")
     @ResponseStatus(HttpStatus.CREATED)
     public Image createUserImage(
-            @PathVariable long id,
+            @PathVariable UUID id,
             @RequestParam UUID promptId,
             @ModelAttribute ImageRequestBody imageRequestBody
     ) throws IOException {
@@ -53,4 +53,5 @@ public class UserController {
         imageService.saveImageToS3(image.getId(), imageRequestBody.getFile());
         return image;
     }
+
 }

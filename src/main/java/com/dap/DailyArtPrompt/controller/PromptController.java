@@ -4,6 +4,7 @@ import com.dap.DailyArtPrompt.entity.Prompt;
 import com.dap.DailyArtPrompt.service.PromptService;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class PromptController {
     }
     @PostMapping("/prompts")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createPrompts(@RequestParam long userId) {
+    public void createPrompts(@RequestParam UUID userId) {
         log.info("Generating prompts");
         promptService.createPrompts(userId);
     }

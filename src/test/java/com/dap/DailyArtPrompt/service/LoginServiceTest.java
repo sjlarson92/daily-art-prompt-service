@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -53,7 +55,7 @@ class LoginServiceTest {
             public void returnsResponseEntityWithCorrectStatus() {
                 String email = "electronicmail@email.com";
                 String password = "notMyPassword";
-                UserResponse userResponse = new UserResponse(1, email, User.Role.FEEDER);
+                UserResponse userResponse = new UserResponse(UUID.randomUUID(), email, User.Role.FEEDER);
                 when(userRepository.findByEmailAndPassword(email,password))
                         .thenReturn(userResponse);
                 assertThat(loginService.validateLogin(email, password).getStatusCode())
@@ -63,7 +65,7 @@ class LoginServiceTest {
             public void returnsResponseEntityWithCorrectHeader() {
                 String email = "electronicmail@email.com";
                 String password = "notMyPassword";
-                UserResponse userResponse = new UserResponse(1, email, User.Role.FEEDER);
+                UserResponse userResponse = new UserResponse(UUID.randomUUID(), email, User.Role.FEEDER);
                 when(userRepository.findByEmailAndPassword(email,password))
                         .thenReturn(userResponse);
                 assertThat(loginService.validateLogin(email, password).getBody())

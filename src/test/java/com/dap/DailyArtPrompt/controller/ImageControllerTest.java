@@ -57,7 +57,8 @@ class ImageControllerTest {
             public void shouldReturnImage() throws Exception {
                 UUID imageId = UUID.randomUUID();
                 UUID promptId = UUID.randomUUID();
-                Image image = new Image(imageId, promptId, 1234, "some name", "src", false, null);
+                UUID userId = UUID.randomUUID();
+                Image image = new Image(imageId, promptId, userId, "some name", "src", false);
                 when(imageRepository.findById(imageId)).thenReturn(Optional.of(image));
                 mockMvc.perform(
                         get("/images/" + imageId)

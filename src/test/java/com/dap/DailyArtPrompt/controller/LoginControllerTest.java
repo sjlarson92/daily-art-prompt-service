@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -46,7 +48,7 @@ class LoginControllerTest {
         @Test
         public void callsValidateUserWithCorrectParams() throws Exception {
             UserResponse userResponse = UserResponse.builder()
-                    .id(1)
+                    .id(UUID.randomUUID())
                     .email("email")
                     .build();
             ResponseEntity<UserResponse> userResponseEntity = ResponseEntity
@@ -66,7 +68,7 @@ class LoginControllerTest {
         @Test
         public void returnsResponseEntityOfUserResponse() throws Exception{
             UserResponse userResponse = UserResponse.builder()
-                    .id(1)
+                    .id(UUID.randomUUID())
                     .email("email")
                     .build();
             ResponseEntity<UserResponse> userResponseEntity = ResponseEntity

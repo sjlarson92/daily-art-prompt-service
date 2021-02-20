@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: alter-user-id-1
+      author: Sasha
+      changes:
+        - delete:
+            tableName: image
+  - changeSet:
+      id: alter-user-id-2
+      author: Sasha
+      changes:
+        - modifyDataType:
+            tableName: image
+            columnName: user_id
+            newDataType: char
+  - changeSet:
+      id: alter-user-id-3
+      author: Sasha
+      changes:
+        - modifyDataType:
+            tableName: image
+            columnName: user_id
+            newDataType: UUID

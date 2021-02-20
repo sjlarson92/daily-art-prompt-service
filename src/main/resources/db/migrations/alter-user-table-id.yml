@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: alter-user-table-id-1
+      author: Sasha
+      changes:
+        - modifyDataType:
+            tableName: user
+            columnName: id
+            newDataType: char
+  - changeSet:
+      id: alter-user-table-id-2
+      author: Sasha
+      changes:
+         - modifyDataType:
+             tableName: user
+             columnName: id
+             newDataType: UUID
+  - changeSet:
+      id: alter-comment-table-1
+      author: Me
+      changes:
+        - addColumn:
+            tableName: comment
+            columns:
+              - column:
+                  name: user_id
+                  type: UUID
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+  - changeSet:
+      id: alter-comment-table-2
+      author: me again
+      changes:
+        - dropColumn:
+            tableName: comment
+            columns:
+              - column:
+                  name: deleted
+              - column:
+                  name: editing

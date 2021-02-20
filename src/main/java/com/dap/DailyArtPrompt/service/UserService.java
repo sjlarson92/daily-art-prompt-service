@@ -55,7 +55,7 @@ public class UserService {
 
     }
 
-    public Image createImageMetadata(long userId, UUID promptId, String description) {
+    public Image createImageMetadata(UUID userId, UUID promptId, String description) {
         UUID imageId = UUID.randomUUID();
         String url = gatewayBaseUrl + "/api/images/" + imageId + "/content";
         Image newImage = Image.builder()

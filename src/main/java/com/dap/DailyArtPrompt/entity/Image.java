@@ -24,7 +24,7 @@ public class Image {
 
     private UUID promptId;
 
-    private long userId;
+    private UUID userId;
 
     private String description;
 
@@ -32,8 +32,4 @@ public class Image {
 
     // TODO: add default value of false
     private boolean liked;
-
-    @OneToMany(mappedBy = "image")
-    @JsonManagedReference
-    private List<Comment> comments;
 }

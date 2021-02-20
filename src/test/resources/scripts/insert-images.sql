@@ -1,6 +1,6 @@
-insert into image (id, user_id, description, url, liked)
+insert into image (id, user_id, description, url, liked, prompt_id)
 values
-('136DCAEC-28E7-4874-9209-1B5C6A0F6B1B', 1234, 'description', 'url', false),
-('236DCAEC-28E7-4874-9209-1B5C6A0F6B1B', 1234, 'description', 'url', false),
-('336DCAEC-28E7-4874-9209-1B5C6A0F6B1B', 1234, 'description', 'url', false),
-('436DCAEC-28E7-4874-9209-1B5C6A0F6B1B', 1234, 'description', 'url', false);
+('136DCAEC-28E7-4874-9209-1B5C6A0F6B1B', '64A90ED2-F125-4003-9920-09D14344AA4A', 'description', 'url', false, '3D928D20-DF9D-4D3C-992D-9DC961B84A21'),
+('236DCAEC-28E7-4874-9209-1B5C6A0F6B1B', '64A90ED2-F125-4003-9920-09D14344AA4A', 'description', 'url', false, '3D928D20-DF9D-4D3C-992D-9DC961B84A21'),
+('336DCAEC-28E7-4874-9209-1B5C6A0F6B1B', '64A90ED2-F125-4003-9920-09D14344AA4A', 'description', 'url', false, '3D928D20-DF9D-4D3C-992D-9DC961B84A21'),
+('436DCAEC-28E7-4874-9209-1B5C6A0F6B1B', '64A90ED2-F125-4003-9920-09D14344AA4A', 'description', 'url', false, '3D928D20-DF9D-4D3C-992D-9DC961B84A21');
