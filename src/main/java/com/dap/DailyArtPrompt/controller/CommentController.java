@@ -21,19 +21,4 @@ public class CommentController {
         log.info("Saving comment with the following requestBody: " + commentRequestBody);
         return commentService.createComment(commentRequestBody);
     }
-
-    @GetMapping("/comments")
-    public void getComments() {
-        // TODO: intake imageId get all comments for image
-    }
-
-    @PutMapping("/comments/{id}")
-    public void updateComment() {
-
-    }
-
-    @DeleteMapping("/comments/{id}")
-    public void deleteComment() {
-
-    }
 }
