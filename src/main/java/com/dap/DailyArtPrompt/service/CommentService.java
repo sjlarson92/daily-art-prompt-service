@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -24,5 +25,9 @@ public class CommentService {
                 OffsetDateTime.now()
         );
         return commentRepository.save(comment);
+    }
+
+    public List<Comment> getComments(UUID imageId) {
+        return commentRepository.getCommentsByImageId(imageId);
     }
 }
