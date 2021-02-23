@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,5 +22,11 @@ public class CommentController {
     public Comment createComment(@Valid @RequestBody CommentRequestBody commentRequestBody) {
         log.info("Saving comment with the following requestBody: " + commentRequestBody);
         return commentService.createComment(commentRequestBody);
+    }
+
+    @GetMapping("/comments")
+    public List<Comment> getComments(@RequestParam UUID imageId) {
+        log.info("Getting comments for imageId: " + imageId);
+        return commentService.getComments(imageId);
     }
 }
