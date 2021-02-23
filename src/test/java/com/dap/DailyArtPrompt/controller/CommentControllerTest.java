@@ -19,6 +19,7 @@ import java.util.UUID;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -67,6 +68,19 @@ class CommentControllerTest {
             }
         }
     }
+
+    @Nested
+    class deleteComment {
+        @Test
+        public void callsCommentServiceWithId() throws Exception {
+            UUID commentId = UUID.randomUUID();
+            mockMvc.perform(delete("/comments/" + commentId));
+            verify(commentService).deleteComment(commentId);
+
+        }
+    }
+
+
 
     @Nested
     class getComments {

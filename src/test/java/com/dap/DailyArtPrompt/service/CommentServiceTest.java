@@ -66,4 +66,14 @@ class CommentServiceTest {
             assertThat(comments).isEqualTo(Collections.emptyList());
         }
     }
+
+    @Nested
+    class deleteComment {
+        @Test
+        public void callsRepoWithId() {
+            UUID id = UUID.randomUUID();
+            commentService.deleteComment(id);
+            verify(commentRepository).deleteById(id);
+        }
+    }
 }

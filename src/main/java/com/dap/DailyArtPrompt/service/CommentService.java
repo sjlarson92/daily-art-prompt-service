@@ -30,4 +30,8 @@ public class CommentService {
     public List<Comment> getComments(UUID imageId) {
         return commentRepository.getCommentsByImageId(imageId);
     }
+
+    public void deleteComment(UUID id) {
+        commentRepository.deleteById(id);
+    }
 }

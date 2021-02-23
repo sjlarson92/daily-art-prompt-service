@@ -5,6 +5,7 @@ import com.dap.DailyArtPrompt.model.CommentRequestBody;
 import com.dap.DailyArtPrompt.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +23,13 @@ public class CommentController {
     public Comment createComment(@Valid @RequestBody CommentRequestBody commentRequestBody) {
         log.info("Saving comment with the following requestBody: " + commentRequestBody);
         return commentService.createComment(commentRequestBody);
+    }
+
+    @DeleteMapping("/comments/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteComment(@PathVariable UUID id) {
+        log.info("Deleting comment with the following id: " + id);
+        commentService.deleteComment(id);
     }
 
     @GetMapping("/comments")
