@@ -13,11 +13,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.UUID;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentController.class)
@@ -63,6 +65,17 @@ class CommentControllerTest {
                         .andExpect(status().isBadRequest());
                 verify(commentService, times(0)).createComment(commentRequestBody);
             }
+        }
+    }
+
+    @Nested
+    class getComments {
+        @Test
+        public void returnsCommentsForGivenImageId() throws Exception {
+            UUID imageId = UUID.randomUUID();
+            when(commentService.getComments(imageId)).thenReturn(Collections.emptyList());
+            mockMvc.perform(get("/comments?imageId=" + imageId))
+                    .andExpect(content().string("[]"));
         }
     }
 }

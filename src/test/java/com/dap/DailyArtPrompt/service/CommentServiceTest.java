@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,6 +53,17 @@ class CommentServiceTest {
             when(commentRepository.save(any(Comment.class))).thenReturn(comment);
             Comment savedComment = commentService.createComment(commentRequestBody);
             assertThat(savedComment).isEqualTo(comment);
+        }
+    }
+
+    @Nested
+    class getComments {
+        @Test
+        public void returnsListOfComments() {
+            UUID imageId = UUID.randomUUID();
+            when(commentRepository.getCommentsByImageId(imageId)).thenReturn(Collections.emptyList());
+            List<Comment> comments = commentService.getComments(imageId);
+            assertThat(comments).isEqualTo(Collections.emptyList());
         }
     }
 }
