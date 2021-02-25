@@ -22,7 +22,8 @@ public class CommentService {
                 commentRequestBody.getImageId(),
                 commentRequestBody.getUserId(),
                 commentRequestBody.getText(),
-                OffsetDateTime.now()
+                OffsetDateTime.now(),
+                null
         );
         return commentRepository.save(comment);
     }
@@ -36,6 +37,7 @@ public class CommentService {
     }
 
     public Comment updateComment(Comment comment) {
+        comment.setUpdatedAt(OffsetDateTime.now());
         return commentRepository.save(comment);
     }
 }

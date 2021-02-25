@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-updatedAt-to-comment-table-1
+      author: Sasha
+      changes:
+        - addColumn:
+            tableName: comment
+            columns:
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone

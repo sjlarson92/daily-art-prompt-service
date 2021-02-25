@@ -26,7 +26,7 @@ public class Comment {
 
     private OffsetDateTime createdAt;
 
-    //TODO: Add updatedAt field
+    private OffsetDateTime updatedAt;
 
 
 }

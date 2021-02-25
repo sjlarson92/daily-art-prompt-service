@@ -1,5 +1,6 @@
 package com.dap.DailyArtPrompt.controller;
 
+import com.dap.DailyArtPrompt.entity.Comment;
 import com.dap.DailyArtPrompt.model.CommentRequestBody;
 import com.dap.DailyArtPrompt.service.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,10 +18,8 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentController.class)
@@ -80,7 +79,22 @@ class CommentControllerTest {
         }
     }
 
+    @Nested
+    class updateComment {
+        @Test
+        public void callsCommentServiceWithComment() throws Exception {
+            UUID id = UUID.randomUUID();
+            UUID imageId = UUID.randomUUID();
+            UUID userId = UUID.randomUUID();
+            Comment comment = new Comment(id, imageId, userId, "comment", null, null);
+            mockMvc.perform(put("/comments/" + id)
+                    .content(objectMapper.writeValueAsString(comment))
+                    .contentType(MediaType.APPLICATION_JSON)
+            );
+            verify(commentService).updateComment(comment);
 
+        }
+    }
 
     @Nested
     class getComments {

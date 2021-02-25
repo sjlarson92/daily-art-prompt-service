@@ -49,7 +49,7 @@ class CommentServiceTest {
             UUID userId = UUID.randomUUID();
             String text = "some comment";
             CommentRequestBody commentRequestBody = new CommentRequestBody(imageId, userId, text);
-            Comment comment = new Comment(UUID.randomUUID(), imageId, userId, text, OffsetDateTime.now());
+            Comment comment = new Comment(UUID.randomUUID(), imageId, userId, text, OffsetDateTime.now(), null);
             when(commentRepository.save(any(Comment.class))).thenReturn(comment);
             Comment savedComment = commentService.createComment(commentRequestBody);
             assertThat(savedComment).isEqualTo(comment);
@@ -74,6 +74,21 @@ class CommentServiceTest {
             UUID id = UUID.randomUUID();
             commentService.deleteComment(id);
             verify(commentRepository).deleteById(id);
+        }
+    }
+
+    @Nested
+    class updateComment {
+        @Test
+        public void returnsUpdatedComment() {
+            UUID id = UUID.randomUUID();
+            UUID imageId = UUID.randomUUID();
+            UUID userId = UUID.randomUUID();
+            String text = "some comment";
+            Comment comment = new Comment(id, imageId, userId, text, null, null);
+            when(commentRepository.save(comment)).thenReturn(comment);
+            Comment updatedComment = commentService.updateComment(comment);
+            assertThat(updatedComment).isEqualTo(comment);
         }
     }
 }
