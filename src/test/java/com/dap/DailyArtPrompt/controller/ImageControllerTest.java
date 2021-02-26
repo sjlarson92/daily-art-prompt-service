@@ -1,8 +1,8 @@
 package com.dap.DailyArtPrompt.controller;
 
 import com.dap.DailyArtPrompt.entity.Image;
-import com.dap.DailyArtPrompt.repository.ImageRepository;
 import com.dap.DailyArtPrompt.service.ImageContentService;
+import com.dap.DailyArtPrompt.service.ImageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,22 +36,20 @@ class ImageControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    ImageRepository imageRepository;
+    ImageService imageService;
 
     @MockBean
     ImageContentService imageContentService;
 
     @BeforeEach
     public void resetMocks() {
-        reset(imageContentService, imageRepository);
+        reset(imageContentService, imageService);
     }
 
     @Nested
     @DisplayName("/images")
     class getImage {
 
-        @Nested
-        class whenImageWithIdExists {
 
             @Test
             public void shouldReturnImage() throws Exception {
@@ -59,28 +57,11 @@ class ImageControllerTest {
                 UUID promptId = UUID.randomUUID();
                 UUID userId = UUID.randomUUID();
                 Image image = new Image(imageId, promptId, userId, "some name", "src", false, null);
-                when(imageRepository.findById(imageId)).thenReturn(Optional.of(image));
+                when(imageService.getImage(imageId)).thenReturn(image);
                 mockMvc.perform(
                         get("/images/" + imageId)
                 ).andExpect(content().string(objectMapper.writeValueAsString(image)));
             }
-        }
-
-        @Nested
-        class whenImageWithIdDoesNotExists {
-
-            @Test
-            public void shouldReturn404WithCorrectErrorMessage() throws Exception {
-                UUID imageId = UUID.randomUUID();
-                when(imageRepository.findById(imageId)).thenReturn(Optional.empty());
-                String message = Objects.requireNonNull(
-                        mockMvc.perform(get("/images/" + imageId))
-                                .andExpect(status().isNotFound())
-                                .andReturn().getResolvedException()).getMessage();
-
-                assertThat(message).contains("No event found by given id: " + imageId);
-            }
-        }
     }
 
 
