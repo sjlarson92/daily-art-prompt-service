@@ -14,6 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class ImageController {
+
     private final ImageContentService imageContentService;
 
     private final ImageService imageService;

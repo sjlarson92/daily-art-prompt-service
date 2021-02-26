@@ -13,17 +13,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 @WebMvcTest(ImageController.class)
 @ExtendWith(MockitoExtension.class)
@@ -50,7 +50,6 @@ class ImageControllerTest {
     @DisplayName("/images")
     class getImage {
 
-
             @Test
             public void shouldReturnImage() throws Exception {
                 UUID imageId = UUID.randomUUID();
@@ -64,6 +63,21 @@ class ImageControllerTest {
             }
     }
 
+    @Nested
+    class updateImage {
+        @Test
+        public void returnUpdatedImage() throws Exception {
+            UUID imageId = UUID.randomUUID();
+            UUID promptId = UUID.randomUUID();
+            UUID userId = UUID.randomUUID();
+            Image image = new Image(imageId, promptId, userId, "some name", "src", false, null);
+            when(imageService.updateImage(image)).thenReturn(image);
+            mockMvc.perform(put("/images/" + imageId)
+                    .content(objectMapper.writeValueAsString(image))
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(content().string(objectMapper.writeValueAsString(image)));
+        }
+    }
 
     @Nested
     class getImageFromS3Bucket {
