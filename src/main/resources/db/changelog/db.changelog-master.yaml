@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/migrations/alter-user-table-id.yml
   - include:
       file: db/migrations/alter-image-table-userid-col.yml
+  - include:
+      file: db/migrations/add-updatedAt-to-comment-table.yml

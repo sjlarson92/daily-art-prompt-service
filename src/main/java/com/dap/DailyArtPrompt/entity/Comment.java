@@ -26,5 +26,7 @@ public class Comment {
 
     private OffsetDateTime createdAt;
 
+    private OffsetDateTime updatedAt;
+
 
 }

@@ -32,6 +32,12 @@ public class CommentController {
         commentService.deleteComment(id);
     }
 
+    @PutMapping("/comments/{id}")
+    public Comment updateComment(@PathVariable UUID id, @RequestBody Comment comment) {
+        log.info("Updating comment with id: " + id);
+        return commentService.updateComment(comment);
+    }
+
     @GetMapping("/comments")
     public List<Comment> getComments(@RequestParam UUID imageId) {
         log.info("Getting comments for imageId: " + imageId);
