@@ -42,7 +42,7 @@ import static org.mockito.Mockito.*;
 )
 @ActiveProfiles("test")
 @AutoConfigureEmbeddedDatabase
-class ImageServiceTest {
+class ImageContentServiceTest {
 
     String s3Bucket = "some-mock-s3-bucket"; // same as properties above
     String accessKey = "some key";
@@ -52,7 +52,7 @@ class ImageServiceTest {
     AWSObjectsFactory awsObjectsFactory;
 
     @Autowired
-    ImageService imageService;
+    ImageContentService imageContentService;
 
     @Nested
     class getImageFromS3Bucket {
@@ -100,7 +100,7 @@ class ImageServiceTest {
 
         @Test
         public void createsAGetObjectRequestWithTheCorrectParams() {
-            imageService.getImageContent(id);
+            imageContentService.getImageContent(id);
             verify(awsObjectsFactory).createGetObjectRequest(
                     s3Bucket,
                     "dap/images/" + id
@@ -109,7 +109,7 @@ class ImageServiceTest {
 
         @Test
         public void createsAGetObjectPresignRequestWithCorrectParams() {
-            imageService.getImageContent(id);
+            imageContentService.getImageContent(id);
             verify(awsObjectsFactory).createGetObjectPresignRequest(
                     Duration.ofMinutes(10),
                     getObjectRequest
@@ -118,7 +118,7 @@ class ImageServiceTest {
 
         @Test
         public void createAwsCredentialProviderWithCorrectParams() {
-            imageService.getImageContent(id);
+            imageContentService.getImageContent(id);
             verify(awsObjectsFactory).createAwsCredentialsProvider(
                     accessKey,
                     secretKey
@@ -127,7 +127,7 @@ class ImageServiceTest {
 
         @Test
         public void createS3PresignerWithCorrectParams() {
-            imageService.getImageContent(id);
+            imageContentService.getImageContent(id);
             verify(awsObjectsFactory).createS3Presigner(
                     awsCredentialsProvider,
                     Region.US_EAST_2
@@ -180,25 +180,25 @@ class ImageServiceTest {
 
         @Test
         public void createS3ClientIsCalledWithCorrectParam() throws IOException {
-            imageService.saveImageToS3(imageId, file);
+            imageContentService.saveImageToS3(imageId, file);
             verify(awsObjectsFactory).createS3Client(region, awsCredentialsProvider);
         }
 
         @Test
         public void createPutObjectRequestIsCalledWithCorrectParams() throws IOException {
-            imageService.saveImageToS3(imageId, file);
+            imageContentService.saveImageToS3(imageId, file);
             verify(awsObjectsFactory).createPutObjectRequest(s3Bucket, key, contentType);
         }
 
         @Test
         public void createRequestBodyIsCalledWithCorrectParams() throws IOException {
-            imageService.saveImageToS3(imageId, file);
+            imageContentService.saveImageToS3(imageId, file);
             verify(awsObjectsFactory).createRequestBody(file);
         }
 
         @Test
         public void saveImageIsCalledWithCorrectParams() throws IOException {
-            imageService.saveImageToS3(imageId, file);
+            imageContentService.saveImageToS3(imageId, file);
             verify(awsObjectsFactory).saveImage(s3Client, putObjectRequest, requestBody);
         }
 

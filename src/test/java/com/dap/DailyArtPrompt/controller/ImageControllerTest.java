@@ -2,7 +2,7 @@ package com.dap.DailyArtPrompt.controller;
 
 import com.dap.DailyArtPrompt.entity.Image;
 import com.dap.DailyArtPrompt.repository.ImageRepository;
-import com.dap.DailyArtPrompt.service.ImageService;
+import com.dap.DailyArtPrompt.service.ImageContentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,11 +39,11 @@ class ImageControllerTest {
     ImageRepository imageRepository;
 
     @MockBean
-    ImageService imageService;
+    ImageContentService imageContentService;
 
     @BeforeEach
     public void resetMocks() {
-        reset(imageService, imageRepository);
+        reset(imageContentService, imageRepository);
     }
 
     @Nested
@@ -58,7 +58,7 @@ class ImageControllerTest {
                 UUID imageId = UUID.randomUUID();
                 UUID promptId = UUID.randomUUID();
                 UUID userId = UUID.randomUUID();
-                Image image = new Image(imageId, promptId, userId, "some name", "src", false);
+                Image image = new Image(imageId, promptId, userId, "some name", "src", false, null);
                 when(imageRepository.findById(imageId)).thenReturn(Optional.of(image));
                 mockMvc.perform(
                         get("/images/" + imageId)
@@ -90,7 +90,7 @@ class ImageControllerTest {
         public void getsImageContentByGivenId() throws Exception {
             UUID imageId = UUID.randomUUID();
             mockMvc.perform(get("/images/" + imageId + "/content"));
-            verify(imageService).getImageContent(imageId);
+            verify(imageContentService).getImageContent(imageId);
         }
 
         @Test
@@ -99,7 +99,7 @@ class ImageControllerTest {
             String url = "/images/" + imageId + "/content";
             String redirectUrl = "some fake url";
             RedirectView redirectView = new RedirectView(redirectUrl);
-            when(imageService.getImageContent(imageId)).thenReturn(redirectView);
+            when(imageContentService.getImageContent(imageId)).thenReturn(redirectView);
             mockMvc.perform(get(url))
                     .andExpect(redirectedUrl(redirectUrl));
         }

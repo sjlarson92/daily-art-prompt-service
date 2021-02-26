@@ -4,7 +4,7 @@ import com.dap.DailyArtPrompt.entity.Image;
 import com.dap.DailyArtPrompt.model.ImageRequestBody;
 import com.dap.DailyArtPrompt.model.UserResponse;
 import com.dap.DailyArtPrompt.repository.ImageRepository;
-import com.dap.DailyArtPrompt.service.ImageService;
+import com.dap.DailyArtPrompt.service.ImageContentService;
 import com.dap.DailyArtPrompt.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,11 +47,11 @@ class UserControllerTest {
     ImageRepository imageRepository;
 
     @MockBean
-    ImageService imageService;
+    ImageContentService imageContentService;
 
     @BeforeEach
     public void clearMocks() {
-        reset(userService, imageService);
+        reset(userService, imageContentService);
     }
 
     @Nested
@@ -110,8 +110,24 @@ class UserControllerTest {
             @Test
             public void returnsAListOfImages() throws Exception {
                 UUID userId = UUID.randomUUID();
-                Image image1 = new Image(UUID.randomUUID(), UUID.randomUUID(), userId, "some desc", "url", false);
-                Image image2 = new Image(UUID.randomUUID(), UUID.randomUUID(), userId, "I am an image", "some url", true);
+                Image image1 = new Image(
+                        UUID.randomUUID(),
+                        UUID.randomUUID(),
+                        userId,
+                        "some desc",
+                        "url",
+                        false,
+                        null
+                );
+                Image image2 = new Image(
+                        UUID.randomUUID(),
+                        UUID.randomUUID(),
+                        userId,
+                        "I am an image",
+                        "some url",
+                        true,
+                        null
+                );
 
                 List<Image> images = List.of(image1, image2);
                 when(imageRepository.findAllByUserId(userId)).thenReturn(images);
@@ -159,7 +175,7 @@ class UserControllerTest {
             mockMvc.perform(
                     post(userImageUrl)
                             .flashAttr("imageRequestBody", imageRequestBody));
-            verify(imageService).saveImageToS3(imageId, imageRequestBody.getFile());
+            verify(imageContentService).saveImageToS3(imageId, imageRequestBody.getFile());
         }
 
         @Test
