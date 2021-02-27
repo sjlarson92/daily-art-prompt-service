@@ -4,7 +4,7 @@ import com.dap.DailyArtPrompt.entity.Image;
 import com.dap.DailyArtPrompt.model.ImageRequestBody;
 import com.dap.DailyArtPrompt.model.UserResponse;
 import com.dap.DailyArtPrompt.repository.ImageRepository;
-import com.dap.DailyArtPrompt.service.ImageService;
+import com.dap.DailyArtPrompt.service.ImageContentService;
 import com.dap.DailyArtPrompt.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class UserController {
 
     private final UserService userService;
     private  final ImageRepository imageRepository;
-    private final ImageService imageService;
+    private final ImageContentService imageContentService;
 
     @PostMapping("/users")
     public ResponseEntity<UserResponse> createUser(
@@ -50,7 +50,7 @@ public class UserController {
         log.info("file: " + imageRequestBody.getFile());
         log.info("description " + imageRequestBody.getDescription());
         Image image = userService.createImageMetadata(id, promptId, imageRequestBody.getDescription());
-        imageService.saveImageToS3(image.getId(), imageRequestBody.getFile());
+        imageContentService.saveImageToS3(image.getId(), imageRequestBody.getFile());
         return image;
     }
 

@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-updatedAt-to-image-1
+      author: Sasha
+      changes:
+        - addColumn:
+            tableName: image
+            columns:
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
