@@ -8,9 +8,8 @@ import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -25,6 +24,13 @@ public class PromptController {
         log.info("Fetching prompts");
         return promptService.getAllPrompts();
     }
+
+    @GetMapping(path = "/prompts", params = "date")
+    public Prompt getPromptByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        log.info("Fetching prompt by date: " + date);
+        return promptService.getPromptByDate(date);
+    }
+
     @PostMapping("/prompts")
     @ResponseStatus(HttpStatus.CREATED)
     public void createPrompts(@RequestParam UUID userId) {

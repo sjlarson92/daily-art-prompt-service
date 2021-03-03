@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -23,6 +24,12 @@ public class ImageController {
     public Image getImage(@PathVariable UUID id) {
         log.info("Fetching image with id " + id);
         return imageService.getImage(id);
+    }
+
+    @GetMapping("/images")
+    public List<Image> getImageByPromptAndUserId(@RequestParam UUID promptId, @RequestParam UUID userId) {
+        log.info("Fetching image with promptId: " + promptId + " and userId: " + userId );
+        return imageService.getImageByPromptAndUserId(promptId, userId);
     }
 
     @PutMapping("/images/{id}")

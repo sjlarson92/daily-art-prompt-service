@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -23,5 +24,9 @@ public class ImageService {
     public Image updateImage(Image image) {
         image.setUpdatedAt(OffsetDateTime.now());
         return imageRepository.save(image);
+    }
+
+    public List<Image> getImageByPromptAndUserId(UUID promptId, UUID userId) {
+        return imageRepository.findAllByPromptIdAndUserId(promptId, userId);
     }
 }

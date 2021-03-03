@@ -37,6 +37,16 @@ public class PromptService {
         return allPromptsMap;
     }
 
+    public Prompt getPromptByDate(LocalDate date) {
+
+        Optional<Prompt> promptByDate = promptRepository.findPromptByDate(date);
+        return promptByDate
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Prompt with date: " + date + " was not found"
+                ));
+    }
+
     public void createPrompts(UUID userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
@@ -48,7 +58,8 @@ public class PromptService {
                     "https://random-word-api.herokuapp.com/word?swear=0&number=" + wordAmount,
                     HttpMethod.GET,
                     null,
-                    new ParameterizedTypeReference<List<String>>() {}
+                    new ParameterizedTypeReference<List<String>>() {
+                    }
             ).getBody();
             Prompt mostRecentPrompt = promptRepository.findFirstByOrderByDateDesc();
             LocalDate mostRecentDate = mostRecentPrompt != null
