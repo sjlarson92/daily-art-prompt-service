@@ -82,6 +82,32 @@ class PromptServiceTest {
     }
 
     @Nested
+    class getPromptByDate {
+        @Nested
+        class whenPromptWithDateExists {
+            @Test
+            public void returnPrompt() {
+                LocalDate date = LocalDate.now();
+                Prompt prompt = new Prompt();
+                when(promptRepository.findPromptByDate(date)).thenReturn(Optional.of(prompt));
+                Prompt promptByDate = promptService.getPromptByDate(date);
+                assertThat(promptByDate).isEqualTo(prompt);
+            }
+        }
+        @Nested
+        class whenPromptWithDateDoesNOTExist {
+            @Test
+            public void throwsException() {
+                LocalDate date = LocalDate.now();
+                assertThatThrownBy(() -> promptService.getPromptByDate(date))
+                        .isInstanceOf(ResponseStatusException.class)
+                        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
+                        .hasMessageContaining("Prompt with date: " + date + " was not found");
+            }
+        }
+    }
+
+    @Nested
     class createPrompts {
 
         @Nested

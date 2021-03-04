@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -65,6 +66,19 @@ public class ImageServiceTest {
             when(imageRepository.save(image)).thenReturn(image);
             Image updatedImage = imageService.updateImage(image);
             assertThat(updatedImage.getUpdatedAt()).isNotNull();
+        }
+    }
+
+    @Nested
+    class getImageByPromptAndUserId {
+        @Test
+        public void returnListOfImages() {
+            UUID promptId = UUID.randomUUID();
+            UUID userId = UUID.randomUUID();
+            Image image = new Image();
+            when(imageRepository.findAllByPromptIdAndUserId(promptId, userId)).thenReturn(List.of(image));
+            List<Image> imageByPromptAndUserId = imageService.getImageByPromptAndUserId(promptId, userId);
+            assertThat(imageByPromptAndUserId).isEqualTo(List.of(image));
         }
     }
 }
