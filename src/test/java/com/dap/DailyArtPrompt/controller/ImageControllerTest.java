@@ -3,6 +3,7 @@ package com.dap.DailyArtPrompt.controller;
 import com.dap.DailyArtPrompt.entity.Image;
 import com.dap.DailyArtPrompt.service.ImageContentService;
 import com.dap.DailyArtPrompt.service.ImageService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -74,6 +75,23 @@ class ImageControllerTest {
             when(imageService.getImageByPromptAndUserId(promptId, userId)).thenReturn(List.of(image));
             mockMvc.perform(
                     get("/images")
+                    .param("promptId", promptId.toString())
+                    .param("userId", userId.toString())
+            ).andExpect(content().string(objectMapper.writeValueAsString(List.of(image))));
+        }
+    }
+
+    @Nested
+    class getCommunityImagesByPromptIdAndUserId {
+        @Test
+        public void returnListOfImages() throws Exception {
+            UUID promptId = UUID.randomUUID();
+            UUID userId = UUID.randomUUID();
+            Image image = new Image(null, promptId, userId, "some name", "src", false, null);
+            when(imageService.getCommunityImagesByPromptIdAndUserId(promptId, userId))
+                    .thenReturn(List.of(image));
+            mockMvc.perform(
+                    get("/community-images")
                     .param("promptId", promptId.toString())
                     .param("userId", userId.toString())
             ).andExpect(content().string(objectMapper.writeValueAsString(List.of(image))));

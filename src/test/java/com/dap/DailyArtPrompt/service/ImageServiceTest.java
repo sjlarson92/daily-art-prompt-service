@@ -81,4 +81,16 @@ public class ImageServiceTest {
             assertThat(imageByPromptAndUserId).isEqualTo(List.of(image));
         }
     }
+
+    @Nested
+    class getCommunityImagesByPromptIdAndUserId {
+        public void returnListOfImages() {
+            UUID promptId = UUID.randomUUID();
+            UUID userId = UUID.randomUUID();
+            Image image = new Image();
+            when(imageRepository.findAllByPromptIdAndUserId(promptId, userId)).thenReturn(List.of(image));
+            List<Image> imageByPromptAndUserId = imageService.getCommunityImagesByPromptIdAndUserId(promptId, userId);
+            assertThat(imageByPromptAndUserId).isEqualTo(List.of(image));
+        }
+    }
 }
