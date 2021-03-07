@@ -44,4 +44,10 @@ public class ImageController {
         return imageContentService.getImageContent(id);
     }
 
+    @GetMapping("/community-images")
+    public List<Image> getCommunityImagesByPromptIdAndUserId(@RequestParam UUID promptId, @RequestParam UUID userId) {
+        log.info("Fetching community images with promptId: " + promptId);
+        return imageService.getCommunityImagesByPromptIdAndUserId(promptId, userId);
+    }
+
 }
