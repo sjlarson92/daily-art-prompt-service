@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
@@ -61,6 +62,22 @@ class ImageControllerTest {
                         get("/images/" + imageId)
                 ).andExpect(content().string(objectMapper.writeValueAsString(image)));
             }
+    }
+
+    @Nested
+    class getImageByPromptAndUserId {
+        @Test
+        public void shouldReturnListOfImages() throws Exception {
+            UUID promptId = UUID.randomUUID();
+            UUID userId = UUID.randomUUID();
+            Image image = new Image(null, promptId, userId, "some name", "src", false, null);
+            when(imageService.getImageByPromptAndUserId(promptId, userId)).thenReturn(List.of(image));
+            mockMvc.perform(
+                    get("/images")
+                    .param("promptId", promptId.toString())
+                    .param("userId", userId.toString())
+            ).andExpect(content().string(objectMapper.writeValueAsString(List.of(image))));
+        }
     }
 
     @Nested
