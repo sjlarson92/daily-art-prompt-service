@@ -12,4 +12,6 @@ public interface ImageRepository extends JpaRepository<Image, UUID> {
     List<Image> findAllByUserId(UUID id);
 
     List<Image> findAllByPromptIdAndUserId(UUID promptId, UUID userId);
+
+    List<Image> findAllByPromptIdAndUserIdNot(UUID promptId, UUID userId);
 }

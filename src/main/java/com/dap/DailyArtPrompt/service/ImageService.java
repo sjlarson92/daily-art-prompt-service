@@ -29,4 +29,8 @@ public class ImageService {
     public List<Image> getImageByPromptAndUserId(UUID promptId, UUID userId) {
         return imageRepository.findAllByPromptIdAndUserId(promptId, userId);
     }
+
+    public List<Image> getCommunityImagesByPromptIdAndUserId(UUID promptId, UUID userId) {
+        return imageRepository.findAllByPromptIdAndUserIdNot(promptId, userId);
+    }
 }

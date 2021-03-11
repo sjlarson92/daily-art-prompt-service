@@ -32,6 +32,12 @@ public class ImageController {
         return imageService.getImageByPromptAndUserId(promptId, userId);
     }
 
+    @GetMapping("/community-images")
+    public List<Image> getCommunityImagesByPromptIdAndUserId(@RequestParam UUID promptId, @RequestParam UUID userId) {
+        log.info("Fetching community images with promptId: " + promptId);
+        return imageService.getCommunityImagesByPromptIdAndUserId(promptId, userId);
+    }
+
     @PutMapping("/images/{id}")
     public Image updateImage(@PathVariable UUID id, @RequestBody Image image) {
         log.info("Updating image for id: " + id);
