@@ -57,6 +57,9 @@ class UserControllerTest {
     @Nested
     @DisplayName("/users")
     class createUser {
+        String email = "fakeEmail@testing.com";
+        String name = "some name";
+        String password = "NotMyPassword";
 
         @Test
         public void callsCreateUserWithCorrectParams() throws Exception {
@@ -69,14 +72,15 @@ class UserControllerTest {
                     .status(HttpStatus.CREATED)
                     .body(userResponse);
             when(userService
-                    .createUser("fakeEmail@testing.com", "NotMyPassword"))
+                    .createUser(email, name, password))
                     .thenReturn(userResponseEntity);
             mockMvc.perform(
                     post("/users")
                             .header("email", "fakeEmail@testing.com")
                             .header("password", "NotMyPassword")
+                    .content(name)
             );
-            verify(userService).createUser("fakeEmail@testing.com", "NotMyPassword");
+            verify(userService).createUser(email, name, password);
 
         }
 
@@ -84,7 +88,8 @@ class UserControllerTest {
         public void returnsUserResponse() throws Exception {
             UserResponse userResponse = UserResponse.builder()
                     .id(UUID.randomUUID())
-                    .email("fakeEmail@testing.com")
+                    .email(email)
+                    .name(name)
                     .build();
 
             ResponseEntity<UserResponse> userResponseEntity = ResponseEntity
@@ -92,12 +97,13 @@ class UserControllerTest {
                     .body(userResponse);
 
             when(userService
-                    .createUser("fakeEmail@testing.com", "NotMyPassword"))
+                    .createUser(email, name, password))
                     .thenReturn(userResponseEntity);
             mockMvc
                     .perform(post("/users")
                             .header("email", "fakeEmail@testing.com")
-                            .header("password", "NotMyPassword"))
+                            .header("password", "NotMyPassword")
+                            .content(name))
                     .andExpect(content().string(objectMapper.writeValueAsString(userResponse)));
         }
     }

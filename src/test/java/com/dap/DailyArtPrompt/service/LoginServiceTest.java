@@ -51,11 +51,12 @@ class LoginServiceTest {
 
         @Nested
         class whenUserResponseIsFoundInDB {
+            String email = "electronicmail@email.com";
+            String name = "MegaMan";
+            String password = "notMyPassword";
             @Test
             public void returnsResponseEntityWithCorrectStatus() {
-                String email = "electronicmail@email.com";
-                String password = "notMyPassword";
-                UserResponse userResponse = new UserResponse(UUID.randomUUID(), email, User.Role.FEEDER);
+                UserResponse userResponse = new UserResponse(UUID.randomUUID(), email, name, User.Role.FEEDER);
                 when(userRepository.findByEmailAndPassword(email,password))
                         .thenReturn(userResponse);
                 assertThat(loginService.validateLogin(email, password).getStatusCode())
@@ -63,9 +64,7 @@ class LoginServiceTest {
             }
             @Test
             public void returnsResponseEntityWithCorrectHeader() {
-                String email = "electronicmail@email.com";
-                String password = "notMyPassword";
-                UserResponse userResponse = new UserResponse(UUID.randomUUID(), email, User.Role.FEEDER);
+                UserResponse userResponse = new UserResponse(UUID.randomUUID(), email, name, User.Role.FEEDER);
                 when(userRepository.findByEmailAndPassword(email,password))
                         .thenReturn(userResponse);
                 assertThat(loginService.validateLogin(email, password).getBody())

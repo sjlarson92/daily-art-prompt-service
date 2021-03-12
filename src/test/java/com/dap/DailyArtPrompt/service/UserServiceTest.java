@@ -30,30 +30,30 @@ class UserServiceTest {
 
     @Nested
     class createUser {
+        String email = "Daisy Daisy give me your answer true";
+        String password ="I'm half crazy all for the love of you!";
+        String name = "It won't be a stylish marriage, I can't afford a carriage!";
         @Nested
         class whenEmailIsInDatabase {
             @Test
             public void returnsResponseEntityWithCorrectStatus() {
-                String email = "fakeEmail";
-                String password ="notAGoodPassword";
-                User testUser = new User(email, password);
+                User testUser = new User(email, name, password);
                 when(userRepository.save(any(User.class))).thenReturn(testUser);
-                assertThat(userService.createUser(email, password).getStatusCode())
+                assertThat(userService.createUser(email, name, password).getStatusCode())
                         .isEqualTo(HttpStatus.CREATED);
             }
 
             @Test
             public void returnsResponseEntityWithCorrectBody() {
-                String email = "fakeEmail";
-                String password ="notAGoodPassword";
-                User testUser = new User(email, password);
+                User testUser = new User(email, name, password);
                 UserResponse userResponse = UserResponse.builder()
                         .id(testUser.getId())
                         .email(testUser.getEmail())
+                        .name(testUser.getName())
                         .role(testUser.getRole())
                         .build();
                 when(userRepository.save(any(User.class))).thenReturn(testUser);
-                assertThat(userService.createUser(email,password).getBody())
+                assertThat(userService.createUser(email,name, password).getBody())
                         .isEqualTo(userResponse);
             }
         }
@@ -62,11 +62,9 @@ class UserServiceTest {
         class whenEmailIsNotInDatabase {
             @Test
             public void returnsResponseEntityWithCorrectStatus() {
-                String email = "fakeEmail";
-                String password ="notAGoodPassword";
                 when(userRepository.save(any(User.class)))
                         .thenThrow(DataIntegrityViolationException.class);
-                assertThat(userService.createUser(email, password).getStatusCode())
+                assertThat(userService.createUser(email, name, password).getStatusCode())
                         .isEqualTo(HttpStatus.CONFLICT);
             }
 
@@ -77,7 +75,7 @@ class UserServiceTest {
                 when(userRepository.save(any(User.class)))
                         .thenThrow(DataIntegrityViolationException.class);
                 //noinspection ConstantConditions
-                assertThat(userService.createUser(email, password).getHeaders().get("message").get(0))
+                assertThat(userService.createUser(email, name, password).getHeaders().get("message").get(0))
                         .isEqualTo("Email already in use. Please try again");
             }
         }

@@ -20,14 +20,18 @@ public class User {
     private String email;
 
     @Column
+    private String name;
+
+    @Column
     private String password;
 
     @Column
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public User(String email, String password) {
+    public User(String email, String name, String password) {
         this.email = email;
+        this.name = name;
         this.password = password;
         this.role = Role.FEEDER;
         this.id = UUID.randomUUID();
