@@ -34,13 +34,14 @@ public class UserService {
     }
 
 
-    public ResponseEntity<UserResponse> createUser(String email, String password) throws DataIntegrityViolationException {
-        User newUser = new User(email, password);
+    public ResponseEntity<UserResponse> createUser(String email, String name, String password) throws DataIntegrityViolationException {
+        User newUser = new User(email, name, password);
         try {
             User savedUser = userRepository.save(newUser);
             UserResponse userResponse = UserResponse.builder()
                     .id(savedUser.getId())
                     .email(savedUser.getEmail())
+                    .name(savedUser.getName())
                     .role(savedUser.getRole())
                     .build();
             return ResponseEntity

@@ -27,11 +27,12 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<UserResponse> createUser(
-        @RequestHeader("email") String email,
-        @RequestHeader("password") String password
+        @RequestHeader String email,
+        @RequestHeader String password,
+        @RequestHeader String name
     ) {
-            log.info("Creating user with email: {}", email);
-            return userService.createUser(email, password);
+            log.info("Creating user with email: {} and name {}", email, name);
+            return userService.createUser(email, name, password);
     }
 
     @GetMapping("/users/{id}/images")
