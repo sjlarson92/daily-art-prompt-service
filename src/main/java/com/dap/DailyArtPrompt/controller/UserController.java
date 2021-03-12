@@ -27,11 +27,11 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<UserResponse> createUser(
-        @RequestHeader("email") String email,
-        @RequestHeader("password") String password,
-        @RequestBody() String name
+        @RequestHeader String email,
+        @RequestHeader String password,
+        @RequestHeader String name
     ) {
-            log.info("Creating user with email: {}", email);
+            log.info("Creating user with email: {} and name {}", email, name);
             return userService.createUser(email, name, password);
     }
 

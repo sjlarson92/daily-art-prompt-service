@@ -78,7 +78,7 @@ class UserControllerTest {
                     post("/users")
                             .header("email", "fakeEmail@testing.com")
                             .header("password", "NotMyPassword")
-                    .content(name)
+                            .header("name", name)
             );
             verify(userService).createUser(email, name, password);
 
@@ -101,9 +101,9 @@ class UserControllerTest {
                     .thenReturn(userResponseEntity);
             mockMvc
                     .perform(post("/users")
-                            .header("email", "fakeEmail@testing.com")
-                            .header("password", "NotMyPassword")
-                            .content(name))
+                            .header("email", email)
+                            .header("password", password)
+                            .header("name", name))
                     .andExpect(content().string(objectMapper.writeValueAsString(userResponse)));
         }
     }
