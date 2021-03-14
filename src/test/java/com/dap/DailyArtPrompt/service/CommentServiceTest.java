@@ -4,7 +4,6 @@ import com.dap.DailyArtPrompt.entity.Comment;
 import com.dap.DailyArtPrompt.entity.User;
 import com.dap.DailyArtPrompt.model.CommentRequestBody;
 import com.dap.DailyArtPrompt.repository.CommentRepository;
-import com.dap.DailyArtPrompt.repository.UserRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,9 +25,6 @@ class CommentServiceTest {
     @Mock
     CommentRepository commentRepository;
 
-    @Mock
-    UserRepository userRepository;
-
     @InjectMocks
     CommentService commentService;
 
@@ -38,16 +33,16 @@ class CommentServiceTest {
         UUID imageId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         String text = "some comment";
-        User user = new User("fake email", "name", "password");
         CommentRequestBody commentRequestBody = new CommentRequestBody(imageId, userId, text);
         @Test
         public void saveCommentWithFieldsMappedProperly() {
-            when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+            User user = new User();
+            user.setId(commentRequestBody.getUserId());
             commentService.createComment(commentRequestBody);
             verify(commentRepository).save(
                     argThat((myComment) ->
                             myComment.getImageId() == commentRequestBody.getImageId() &&
-                            myComment.getUser() == user &&
+                            myComment.getUser().getId() == user.getId() &&
                             myComment.getText().equals(commentRequestBody.getText())
                     )
             );
@@ -55,7 +50,8 @@ class CommentServiceTest {
 
         @Test
         public void returnSavedComment() {
-            when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+            User user = new User();
+            user.setId(commentRequestBody.getUserId());
             Comment comment = new Comment(UUID.randomUUID(), imageId, user, text, OffsetDateTime.now(), null);
             when(commentRepository.save(any(Comment.class))).thenReturn(comment);
             Comment savedComment = commentService.createComment(commentRequestBody);

@@ -4,15 +4,11 @@ import com.dap.DailyArtPrompt.entity.Comment;
 import com.dap.DailyArtPrompt.entity.User;
 import com.dap.DailyArtPrompt.model.CommentRequestBody;
 import com.dap.DailyArtPrompt.repository.CommentRepository;
-import com.dap.DailyArtPrompt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -20,16 +16,14 @@ import java.util.UUID;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
 
     public Comment createComment(CommentRequestBody commentRequestBody) {
-        Optional<User> existingUser = userRepository.findById(commentRequestBody.getUserId());
-        existingUser.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "No user found by id: " + commentRequestBody.getUserId()));
-
+        User user = new User();
+        user.setId(commentRequestBody.getUserId());
         Comment comment = new Comment(
                 UUID.randomUUID(),
                 commentRequestBody.getImageId(),
-                existingUser.get(),
+                user,
                 commentRequestBody.getText(),
                 OffsetDateTime.now(),
                 null
