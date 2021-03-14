@@ -1,6 +1,7 @@
 package com.dap.DailyArtPrompt.service;
 
 import com.dap.DailyArtPrompt.entity.Comment;
+import com.dap.DailyArtPrompt.entity.User;
 import com.dap.DailyArtPrompt.model.CommentRequestBody;
 import com.dap.DailyArtPrompt.repository.CommentRepository;
 import org.junit.jupiter.api.Nested;
@@ -29,15 +30,19 @@ class CommentServiceTest {
 
     @Nested
     class createComment {
-
+        UUID imageId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+        String text = "some comment";
+        CommentRequestBody commentRequestBody = new CommentRequestBody(imageId, userId, text);
         @Test
         public void saveCommentWithFieldsMappedProperly() {
-            CommentRequestBody commentRequestBody = new CommentRequestBody(UUID.randomUUID(), UUID.randomUUID(), "comment");
+            User user = new User();
+            user.setId(commentRequestBody.getUserId());
             commentService.createComment(commentRequestBody);
             verify(commentRepository).save(
                     argThat((myComment) ->
                             myComment.getImageId() == commentRequestBody.getImageId() &&
-                            myComment.getUserId() == commentRequestBody.getUserId() &&
+                            myComment.getUser().getId() == user.getId() &&
                             myComment.getText().equals(commentRequestBody.getText())
                     )
             );
@@ -45,11 +50,9 @@ class CommentServiceTest {
 
         @Test
         public void returnSavedComment() {
-            UUID imageId = UUID.randomUUID();
-            UUID userId = UUID.randomUUID();
-            String text = "some comment";
-            CommentRequestBody commentRequestBody = new CommentRequestBody(imageId, userId, text);
-            Comment comment = new Comment(UUID.randomUUID(), imageId, userId, text, OffsetDateTime.now(), null);
+            User user = new User();
+            user.setId(commentRequestBody.getUserId());
+            Comment comment = new Comment(UUID.randomUUID(), imageId, user, text, OffsetDateTime.now(), null);
             when(commentRepository.save(any(Comment.class))).thenReturn(comment);
             Comment savedComment = commentService.createComment(commentRequestBody);
             assertThat(savedComment).isEqualTo(comment);
@@ -85,7 +88,7 @@ class CommentServiceTest {
             UUID imageId = UUID.randomUUID();
             UUID userId = UUID.randomUUID();
             String text = "some comment";
-            Comment comment = new Comment(id, imageId, userId, text, null, null);
+            Comment comment = new Comment(id, imageId, null, text, null, null);
             when(commentRepository.save(comment)).thenReturn(comment);
             Comment updatedComment = commentService.updateComment(comment);
             assertThat(updatedComment).isEqualTo(comment);

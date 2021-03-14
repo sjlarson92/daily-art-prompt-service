@@ -14,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class User {
     @Id
+    @JoinColumn(name = "user_id")
     private UUID id;
 
     @Column

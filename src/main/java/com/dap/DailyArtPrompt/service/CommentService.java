@@ -1,6 +1,7 @@
 package com.dap.DailyArtPrompt.service;
 
 import com.dap.DailyArtPrompt.entity.Comment;
+import com.dap.DailyArtPrompt.entity.User;
 import com.dap.DailyArtPrompt.model.CommentRequestBody;
 import com.dap.DailyArtPrompt.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +18,12 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     public Comment createComment(CommentRequestBody commentRequestBody) {
+        User user = new User();
+        user.setId(commentRequestBody.getUserId());
         Comment comment = new Comment(
                 UUID.randomUUID(),
                 commentRequestBody.getImageId(),
-                commentRequestBody.getUserId(),
+                user,
                 commentRequestBody.getText(),
                 OffsetDateTime.now(),
                 null
