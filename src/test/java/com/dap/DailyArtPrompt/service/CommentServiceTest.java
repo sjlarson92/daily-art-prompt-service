@@ -1,8 +1,10 @@
 package com.dap.DailyArtPrompt.service;
 
 import com.dap.DailyArtPrompt.entity.Comment;
+import com.dap.DailyArtPrompt.entity.User;
 import com.dap.DailyArtPrompt.model.CommentRequestBody;
 import com.dap.DailyArtPrompt.repository.CommentRepository;
+import com.dap.DailyArtPrompt.repository.UserRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,20 +27,27 @@ class CommentServiceTest {
     @Mock
     CommentRepository commentRepository;
 
+    @Mock
+    UserRepository userRepository;
+
     @InjectMocks
     CommentService commentService;
 
     @Nested
     class createComment {
-
+        UUID imageId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+        String text = "some comment";
+        User user = new User("fake email", "name", "password");
+        CommentRequestBody commentRequestBody = new CommentRequestBody(imageId, userId, text);
         @Test
         public void saveCommentWithFieldsMappedProperly() {
-            CommentRequestBody commentRequestBody = new CommentRequestBody(UUID.randomUUID(), UUID.randomUUID(), "comment");
+            when(userRepository.findById(userId)).thenReturn(Optional.of(user));
             commentService.createComment(commentRequestBody);
             verify(commentRepository).save(
                     argThat((myComment) ->
                             myComment.getImageId() == commentRequestBody.getImageId() &&
-                            myComment.getUserId() == commentRequestBody.getUserId() &&
+                            myComment.getUser() == user &&
                             myComment.getText().equals(commentRequestBody.getText())
                     )
             );
@@ -45,11 +55,8 @@ class CommentServiceTest {
 
         @Test
         public void returnSavedComment() {
-            UUID imageId = UUID.randomUUID();
-            UUID userId = UUID.randomUUID();
-            String text = "some comment";
-            CommentRequestBody commentRequestBody = new CommentRequestBody(imageId, userId, text);
-            Comment comment = new Comment(UUID.randomUUID(), imageId, userId, text, OffsetDateTime.now(), null);
+            when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+            Comment comment = new Comment(UUID.randomUUID(), imageId, user, text, OffsetDateTime.now(), null);
             when(commentRepository.save(any(Comment.class))).thenReturn(comment);
             Comment savedComment = commentService.createComment(commentRequestBody);
             assertThat(savedComment).isEqualTo(comment);
@@ -85,7 +92,7 @@ class CommentServiceTest {
             UUID imageId = UUID.randomUUID();
             UUID userId = UUID.randomUUID();
             String text = "some comment";
-            Comment comment = new Comment(id, imageId, userId, text, null, null);
+            Comment comment = new Comment(id, imageId, null, text, null, null);
             when(commentRepository.save(comment)).thenReturn(comment);
             Comment updatedComment = commentService.updateComment(comment);
             assertThat(updatedComment).isEqualTo(comment);

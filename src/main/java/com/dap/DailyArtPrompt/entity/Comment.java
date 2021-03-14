@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -20,7 +19,9 @@ public class Comment {
 
     private UUID imageId;
 
-    private UUID userId;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private String text;
 

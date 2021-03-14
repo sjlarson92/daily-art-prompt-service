@@ -1,6 +1,7 @@
 package com.dap.DailyArtPrompt.controller;
 
 import com.dap.DailyArtPrompt.entity.Comment;
+import com.dap.DailyArtPrompt.entity.User;
 import com.dap.DailyArtPrompt.model.CommentRequestBody;
 import com.dap.DailyArtPrompt.service.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -85,8 +86,8 @@ class CommentControllerTest {
         public void callsCommentServiceWithComment() throws Exception {
             UUID id = UUID.randomUUID();
             UUID imageId = UUID.randomUUID();
-            UUID userId = UUID.randomUUID();
-            Comment comment = new Comment(id, imageId, userId, "comment", null, null);
+            User user = new User();
+            Comment comment = new Comment(id, imageId, user, "comment", null, null);
             mockMvc.perform(put("/comments/" + id)
                     .content(objectMapper.writeValueAsString(comment))
                     .contentType(MediaType.APPLICATION_JSON)
