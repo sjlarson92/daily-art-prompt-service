@@ -5,6 +5,7 @@ import com.dap.DailyArtPrompt.service.ImageContentService;
 import com.dap.DailyArtPrompt.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -44,6 +45,12 @@ public class ImageController {
         return imageService.updateImage(image);
     }
 
+    @DeleteMapping("/images/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteImage(@PathVariable UUID id) {
+        log.info("Deleting image for id: " + id);
+        imageService.deleteImage(id);
+    }
     @GetMapping("/images/{id}/content")
     public RedirectView getImageFromS3Bucket(@PathVariable UUID id) {
         log.info("Fetching image with id: " + id);
