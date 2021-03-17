@@ -1,6 +1,7 @@
 package com.dap.DailyArtPrompt.service;
 
 import com.dap.DailyArtPrompt.entity.Image;
+import com.dap.DailyArtPrompt.repository.CommentRepository;
 import com.dap.DailyArtPrompt.repository.ImageRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +26,9 @@ public class ImageServiceTest {
 
     @Mock
     ImageRepository imageRepository;
+
+    @Mock
+    CommentRepository commentRepository;
 
     @InjectMocks
     ImageService imageService;
@@ -93,6 +98,22 @@ public class ImageServiceTest {
             when(imageRepository.findAllByPromptIdAndUserIdNot(promptId, userId)).thenReturn(imageList);
             List<Image> imageByPromptAndUserId = imageService.getCommunityImagesByPromptIdAndUserId(promptId, userId);
             assertThat(imageByPromptAndUserId).isEqualTo(imageList);
+        }
+    }
+
+    @Nested
+    class deleteImage {
+        UUID imageId = UUID.randomUUID();
+        @Test
+        public void callsCommentRepoWithCorrectParam() {
+            imageService.deleteImage(imageId);
+            verify(commentRepository).deleteAllByImageId(imageId);
+        }
+
+        @Test
+        public void callsImageRepoWithCorrectParam() {
+            imageService.deleteImage(imageId);
+            verify(imageRepository).deleteById(imageId);
         }
     }
 }
