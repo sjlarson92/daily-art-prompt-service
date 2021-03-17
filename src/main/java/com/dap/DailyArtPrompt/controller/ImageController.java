@@ -45,7 +45,7 @@ public class ImageController {
         return imageService.updateImage(image);
     }
 
-    @DeleteMapping("images/{id}")
+    @DeleteMapping("/images/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteImage(@PathVariable UUID id) {
         log.info("Deleting image for id: " + id);
